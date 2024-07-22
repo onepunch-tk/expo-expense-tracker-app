@@ -8,6 +8,8 @@ android
 # Icon must end with two \r
 Icon
 
+#env
+.env
 
 # Thumbnails
 ._*
