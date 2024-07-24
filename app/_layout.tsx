@@ -2,19 +2,15 @@ import FontAwesome from "@expo/vector-icons/FontAwesome";
 import { useFonts } from "expo-font";
 import * as SplashScreen from "expo-splash-screen";
 import { useEffect } from "react";
-import { SafeAreaView, Text } from "react-native";
 import ThemeProvider from "@/components/ThemeProvider";
-import TestComponenet from "@/app/TestComponenet";
+import { Stack } from "expo-router";
+import { useThemeContext } from "@/hooks/useThemeContext";
+import { StatusBar } from "expo-status-bar";
 
 export {
   // Catch any errors thrown by the Layout component.
   ErrorBoundary,
 } from "expo-router";
-
-export const unstable_settings = {
-  // Ensure that reloading on `/modal` keeps a back button present.
-  initialRouteName: "(tabs)",
-};
 
 // Prevent the splash screen from auto-hiding before asset loading is complete.
 SplashScreen.preventAutoHideAsync();
@@ -43,13 +39,24 @@ export default function RootLayout() {
   return <RootLayoutNav />;
 }
 
+function RootPage() {
+  const contextTheme = useThemeContext((s) => s.theme);
+  const theme = contextTheme === "dark" ? "light" : "dark";
+  console.log("contextTheme:", contextTheme, "theme: ", theme);
+  return (
+    <>
+      <StatusBar animated={false} style={theme} />
+      <Stack screenOptions={{ headerShown: false }}>
+        <Stack.Screen name={"(tabs)"} />
+      </Stack>
+    </>
+  );
+}
+
 function RootLayoutNav() {
   return (
     <ThemeProvider>
-      <SafeAreaView>
-        <Text>Hello world</Text>
-        <TestComponenet />
-      </SafeAreaView>
+      <RootPage />
     </ThemeProvider>
   );
 }
