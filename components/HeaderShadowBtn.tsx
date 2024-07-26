@@ -5,6 +5,7 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
+import { useThemeContext } from "@/hooks/useThemeContext";
 
 interface HeaderShadowBtnProps {
   backgroundColor: string;
@@ -16,6 +17,10 @@ function HeaderShadowBtn({
   shadowColor,
   title,
 }: HeaderShadowBtnProps) {
+  const { theme, setTheme } = useThemeContext((s) => ({
+    theme: s.theme,
+    setTheme: s.setTheme,
+  }));
   return (
     <View
       style={[
@@ -26,7 +31,9 @@ function HeaderShadowBtn({
         styles.buttonContainer,
       ]}
     >
-      <TouchableOpacity>
+      <TouchableOpacity
+        onPress={() => setTheme(theme === "dark" ? "light" : "dark")}
+      >
         <Text style={styles.text}>{title}</Text>
       </TouchableOpacity>
     </View>
