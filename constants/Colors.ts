@@ -11,9 +11,13 @@ export interface Theme {
   gradientStart: string;
   gradientEnd: string;
   shadowColor: string;
+  border: string;
+  modalBackground: string;
+  dashBorderColor: string;
 }
 
 export const light: Theme = {
+  modalBackground: "#fff",
   gradientStart: "#7269FF",
   gradientEnd: "#5046EC",
   tabInactiveTint: "#CDC6F8",
@@ -23,9 +27,12 @@ export const light: Theme = {
   tagText: "#6d64ff",
   btnBackground: "#6c63ff",
   shadowColor: "#000",
+  border: "#3b336c",
+  dashBorderColor: "#2c2554",
 };
 
 export const dark: Theme = {
+  modalBackground: "#7590e8",
   gradientStart: "#322C54",
   gradientEnd: "#231D49",
   tabInactiveTint: "#7F78A7",
@@ -35,4 +42,6 @@ export const dark: Theme = {
   tagText: "#6d64ff",
   btnBackground: "#6c63ff",
   shadowColor: "#fff",
+  border: "#3b336c",
+  dashBorderColor: "#2c2554",
 };

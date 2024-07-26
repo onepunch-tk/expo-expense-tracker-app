@@ -1,15 +1,262 @@
-import { Button, Text, View } from "react-native";
+import {
+  FlatList,
+  ScrollView,
+  Text,
+  TouchableOpacity,
+  View,
+} from "react-native";
+import { Ionicons } from "@expo/vector-icons";
 import { useThemeContext } from "@/hooks/useThemeContext";
+import { useState } from "react";
+import BottomSlidingModal from "@/components/BottomSlidingModal";
+import SpinDatePicker from "@/components/SpinDatePicker";
+import DashBorder from "@/components/DashBorder";
+
+const fakeExpenseData = [
+  {
+    id: "0",
+    category: "food/drink",
+    description: "맛있는 햄버거와 콜라를 처먹음",
+    iconName: "fast-food-outline",
+    title: "메가 커피",
+    expense: 5.0,
+    date: "2024-08-27",
+  },
+  {
+    id: "1",
+    category: "clothing/shoes",
+    description: "옷이 필요해서 새 티를 장만함",
+    iconName: "shirt-outline",
+    title: "Nike store",
+    expense: 55.0,
+    date: "2024-08-27",
+  },
+  {
+    id: "2",
+    category: "transport",
+    description: "퇴근 길에 다리가 너무 아파서 택시탐",
+    iconName: "car-outline",
+    title: "카카오 택시",
+    expense: 30.0,
+    date: "2024-08-27",
+  },
+  {
+    id: "3",
+    category: "education",
+    description: "모던 리액트 Deep dive 구매",
+    iconName: "book-outline",
+    title: "교보 문고",
+    expense: 40.0,
+    date: "2024-08-27",
+  },
+  {
+    id: "4",
+    category: "gifts/donations",
+    description: "친구 선물로 그래픽카드를 구매함",
+    iconName: "gift-outline",
+    title: "amazon shop",
+    expense: 180.5,
+    date: "2024-08-27",
+  },
+  {
+    id: "5",
+    category: "entertainment",
+    description: "netflix 구독함",
+    iconName: "game-controller-outline",
+    title: "Netflix",
+    expense: 10.0,
+    date: "2024-08-27",
+  },
+  {
+    id: "6",
+    category: "house",
+    description: "벽면 인테리어",
+    iconName: "construct-outline",
+    title: "Hyphend Design",
+    expense: 860.0,
+    date: "2024-08-27",
+  },
+  {
+    id: "7",
+    category: "house",
+    description: "벽면 인테리어",
+    iconName: "construct-outline",
+    title: "Hyphend Design",
+    expense: 860.0,
+    date: "2024-08-27",
+  },
+  {
+    id: "8",
+    category: "house",
+    description: "벽면 인테리어",
+    iconName: "construct-outline",
+    title: "Hyphend Design",
+    expense: 860.0,
+    date: "2024-08-27",
+  },
+];
+
+const fakeCategories = [
+  "food/drink",
+  "clothing/shoes",
+  "transport",
+  "education",
+  "gifts/donations",
+  "entertainment",
+  "house",
+];
+
+const MENU_WIDTH = 250; // 메뉴의 너비
 
 function Expenses() {
-  const theme = useThemeContext((s) => s.theme);
+  const colors = useThemeContext((s) => s.colors());
   const setTheme = useThemeContext((s) => s.setTheme);
+  const theme = useThemeContext((s) => s.theme);
+  const [selectedCategory, setSelectedCategory] = useState(fakeCategories[0]);
+  const [showDatePicker, setShowDatePicker] = useState(false);
+  const [date, setDate] = useState(new Date());
+
   return (
-    <View>
-      <Text>Expense</Text>
-      <Button
-        title={"Change Theme"}
-        onPress={() => setTheme(theme === "light" ? "dark" : "light")}
+    <View style={{ flex: 1 }}>
+      <View
+        style={{
+          marginTop: 10,
+          paddingHorizontal: 20,
+          flexDirection: "row",
+        }}
+      >
+        <ScrollView horizontal showsHorizontalScrollIndicator={false}>
+          {fakeCategories.map((c, index) => (
+            <TouchableOpacity
+              style={{
+                flex: 1,
+                backgroundColor:
+                  selectedCategory === c
+                    ? colors.tabInactiveTint
+                    : "transparent",
+                borderColor: colors.border,
+                borderStyle: "solid",
+                borderWidth: 0.5,
+                marginRight: 10,
+                borderRadius: 10,
+                justifyContent: "center", // 수직 중앙 정렬
+                alignItems: "center",
+                padding: 10,
+              }}
+              key={index.toString()}
+              onPress={() => {
+                setSelectedCategory(c);
+              }}
+            >
+              <Text
+                style={{
+                  color: colors.text,
+                  fontSize: 15,
+                }}
+              >
+                {c}
+              </Text>
+            </TouchableOpacity>
+          ))}
+        </ScrollView>
+        <View
+          style={{
+            justifyContent: "center",
+            alignItems: "center",
+          }}
+        >
+          <BottomSlidingModal
+            show={showDatePicker}
+            onClose={() => setShowDatePicker(false)}
+          >
+            <SpinDatePicker
+              datePickerHeight={300}
+              backgroundColor={colors.modalBackground}
+              borderTopRadius={20}
+            />
+          </BottomSlidingModal>
+          <TouchableOpacity
+            onPress={() => setShowDatePicker((prevState) => !prevState)}
+          >
+            <Ionicons name={"calendar"} size={30} color={colors.title} />
+          </TouchableOpacity>
+        </View>
+      </View>
+      <DashBorder marginVertical={20} />
+      <FlatList
+        data={fakeExpenseData}
+        showsVerticalScrollIndicator={false}
+        contentContainerStyle={{
+          paddingHorizontal: 20,
+        }}
+        renderItem={({ item }) => (
+          <View
+            key={item.id.toString()}
+            style={{
+              flexDirection: "row",
+              backgroundColor: colors.btnBackground,
+              padding: 10,
+              borderRadius: 10,
+              gap: 10,
+              marginBottom: 15,
+            }}
+          >
+            <View
+              style={{
+                backgroundColor: colors.background,
+                padding: 10,
+                borderRadius: 15,
+                justifyContent: "center",
+              }}
+            >
+              <Ionicons
+                name={item.iconName as any}
+                size={23}
+                color={colors.tagText}
+              />
+            </View>
+            <View style={{ flex: 2, justifyContent: "center" }}>
+              <Text
+                style={{
+                  fontSize: 16,
+                  fontWeight: "bold",
+                  color: colors.background,
+                }}
+              >
+                {item.title}
+              </Text>
+              <Text
+                style={{
+                  opacity: 0.4,
+                  fontSize: 14,
+                  color: colors.background,
+                }}
+              >
+                {item.category}
+              </Text>
+            </View>
+            <View style={{ justifyContent: "center", alignItems: "flex-end" }}>
+              <Text
+                style={{
+                  fontSize: 16,
+                  fontWeight: "bold",
+                  color: colors.background,
+                }}
+              >
+                - ${item.expense.toFixed(2)}
+              </Text>
+              <Text
+                style={{
+                  opacity: 0.4,
+                  fontSize: 14,
+                  color: colors.background,
+                }}
+              >
+                {item.date}
+              </Text>
+            </View>
+          </View>
+        )}
       />
     </View>
   );
