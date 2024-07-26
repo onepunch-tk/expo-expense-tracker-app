@@ -2,7 +2,8 @@ import { Tabs } from "expo-router";
 import { useThemeContext } from "@/hooks/useThemeContext";
 import GradientBackground from "@/components/GradientBackground";
 import { Ionicons } from "@expo/vector-icons";
-import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import HeaderShadowBtn from "@/components/HeaderShadowBtn";
+import { Appearance } from "react-native";
 
 function Layout() {
   const colors = useThemeContext((s) => s.colors());
@@ -24,6 +25,10 @@ function Layout() {
         ),
         tabBarInactiveTintColor: colors.tabInactiveTint,
         tabBarActiveTintColor: "#fff",
+        tabBarLabelStyle: {
+          fontSize: 12,
+          fontWeight: "500",
+        },
       }}
     >
       <Tabs.Screen
@@ -31,28 +36,11 @@ function Layout() {
         options={{
           headerTitle: "Expenses Tracker",
           headerRight: () => (
-            <View
-              // style={{
-              //   backgroundColor: colors.btnBackground,
-              //   borderRadius: 10,
-              //   marginRight: 20,
-              //   paddingVertical: 10,
-              //   paddingHorizontal: 15,
-              //   shadowColor: colors.btnBackground,
-              //   // shadowOffset: {
-              //   //   width: 0,
-              //   //   height: 7,
-              //   // },
-              //   // shadowOpacity: 0.43,
-              //   // shadowRadius: 9.51,
-              //   elevation: 20,
-              // }}
-              style={[styles.card, styles.elevation]}
-            >
-              <TouchableOpacity>
-                <Text>Click</Text>
-              </TouchableOpacity>
-            </View>
+            <HeaderShadowBtn
+              backgroundColor={colors.btnBackground}
+              shadowColor={colors.shadowColor}
+              title="New"
+            />
           ),
           tabBarIcon: ({ focused, size, color }) => (
             <Ionicons
@@ -75,6 +63,13 @@ function Layout() {
               color={color}
             />
           ),
+          headerRight: () => (
+            <HeaderShadowBtn
+              backgroundColor={colors.btnBackground}
+              shadowColor={colors.shadowColor}
+              title="New"
+            />
+          ),
         }}
       />
       <Tabs.Screen
@@ -93,26 +88,5 @@ function Layout() {
     </Tabs>
   );
 }
-
-const styles = StyleSheet.create({
-  heading: {
-    fontSize: 18,
-    fontWeight: "600",
-    marginBottom: 13,
-  },
-  card: {
-    backgroundColor: "#52006A",
-    borderRadius: 10,
-    marginRight: 20,
-    paddingVertical: 10,
-    paddingHorizontal: 15,
-    width: "100%",
-    marginVertical: 10,
-  },
-  elevation: {
-    elevation: 20,
-    shadowColor: "#52006A",
-  },
-});
 
 export default Layout;

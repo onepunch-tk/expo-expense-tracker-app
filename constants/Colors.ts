@@ -10,6 +10,7 @@ export interface Theme {
   tabInactiveTint: string;
   gradientStart: string;
   gradientEnd: string;
+  shadowColor: string;
 }
 
 export const light: Theme = {
@@ -21,6 +22,7 @@ export const light: Theme = {
   text: "#0f0b21",
   tagText: "#6d64ff",
   btnBackground: "#6c63ff",
+  shadowColor: "#000",
 };
 
 export const dark: Theme = {
@@ -32,4 +34,5 @@ export const dark: Theme = {
   text: "#b2a8ee",
   tagText: "#6d64ff",
   btnBackground: "#6c63ff",
+  shadowColor: "#fff",
 };

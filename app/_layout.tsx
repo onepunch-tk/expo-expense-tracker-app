@@ -4,7 +4,6 @@ import * as SplashScreen from "expo-splash-screen";
 import { useEffect } from "react";
 import ThemeProvider from "@/components/ThemeProvider";
 import { Stack } from "expo-router";
-import { useThemeContext } from "@/hooks/useThemeContext";
 import { StatusBar } from "expo-status-bar";
 
 export {
@@ -39,24 +38,13 @@ export default function RootLayout() {
   return <RootLayoutNav />;
 }
 
-function RootPage() {
-  const contextTheme = useThemeContext((s) => s.theme);
-  const theme = contextTheme === "dark" ? "light" : "dark";
-  console.log("contextTheme:", contextTheme, "theme: ", theme);
-  return (
-    <>
-      <StatusBar animated={false} style={theme} />
-      <Stack screenOptions={{ headerShown: false }}>
-        <Stack.Screen name={"(tabs)"} />
-      </Stack>
-    </>
-  );
-}
-
 function RootLayoutNav() {
   return (
     <ThemeProvider>
-      <RootPage />
+      <StatusBar style={"auto"} />
+      <Stack screenOptions={{ headerShown: false }}>
+        <Stack.Screen name={"(tabs)"} />
+      </Stack>
     </ThemeProvider>
   );
 }

@@ -4,6 +4,8 @@ import { dark, light } from "@/constants/Colors";
 import { logger } from "@/store/logger";
 import { ThemeProps, ThemeState } from "@/store/theme/interfaces";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { Appearance } from "react-native";
+import setColorScheme = Appearance.setColorScheme;
 
 export type ThemeStore = ReturnType<typeof createThemeStore>;
 
@@ -31,7 +33,10 @@ export const createThemeStore = () => {
       logger((set, get) => ({
         ...DEFAULT_PROPS,
         colors: () => (get().theme === "dark" ? dark : light),
-        setTheme: (theme) => set({ theme }),
+        setTheme: (theme) => {
+          setColorScheme(theme);
+          set({ theme });
+        },
       })),
       {
         name: "theme-storage",
