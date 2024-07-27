@@ -110,8 +110,6 @@ const MENU_WIDTH = 250; // 메뉴의 너비
 
 function Expenses() {
   const colors = useThemeContext((s) => s.colors());
-  const setTheme = useThemeContext((s) => s.setTheme);
-  const theme = useThemeContext((s) => s.theme);
   const [selectedCategory, setSelectedCategory] = useState(fakeCategories[0]);
   const [showDatePicker, setShowDatePicker] = useState(false);
   const [date, setDate] = useState(new Date());
