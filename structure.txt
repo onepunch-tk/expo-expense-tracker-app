@@ -1,0 +1,58 @@
+.
+├── app
+│   ├── (tabs)
+│   │   ├── _layout.tsx
+│   │   ├── categories.tsx
+│   │   ├── index.tsx
+│   │   └── settings.tsx
+│   ├── +html.tsx
+│   ├── +not-found.tsx
+│   ├── TestComponenet.tsx
+│   └── _layout.tsx
+├── app.json
+├── assets
+│   ├── fonts
+│   │   └── SpaceMono-Regular.ttf
+│   └── images
+│       ├── adaptive-icon.png
+│       ├── favicon.png
+│       ├── icon.png
+│       └── splash.png
+├── babel.config.js
+├── components
+│   ├── BottomSlidingModal.tsx
+│   ├── ConsistentDatePicker.tsx
+│   ├── DashBorder.tsx
+│   ├── GradientBackground.tsx
+│   ├── HeaderShadowBtn.tsx
+│   ├── SpinDatePicker.tsx
+│   └── ThemeProvider.tsx
+├── constants
+│   └── Colors.ts
+├── db
+│   ├── category.schema.ts
+│   ├── expense.schema.ts
+│   ├── index.ts
+│   └── user.schema.ts
+├── drizzle
+│   ├── 0000_brainy_lilandra.sql
+│   ├── meta
+│   │   ├── 0000_snapshot.json
+│   │   └── _journal.json
+│   └── migrations.js
+├── drizzle.config.ts
+├── expo-env.d.ts
+├── hooks
+│   └── useThemeContext.ts
+├── metro.config.js
+├── package.json
+├── pnpm-lock.yaml
+├── store
+│   ├── logger.ts
+│   └── theme
+│       ├── interfaces.ts
+│       └── themeStore.ts
+├── structure.txt
+└── tsconfig.json
+
+14 directories, 42 files

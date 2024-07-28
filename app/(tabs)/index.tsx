@@ -11,6 +11,7 @@ import { useState } from "react";
 import BottomSlidingModal from "@/components/BottomSlidingModal";
 import SpinDatePicker from "@/components/SpinDatePicker";
 import DashBorder from "@/components/DashBorder";
+import { CategoryType } from "@/db/types";
 
 const fakeExpenseData = [
   {
@@ -96,21 +97,15 @@ const fakeExpenseData = [
   },
 ];
 
-const fakeCategories = [
-  "food/drink",
-  "clothing/shoes",
-  "transport",
-  "education",
-  "gifts/donations",
-  "entertainment",
-  "house",
-];
-
 const MENU_WIDTH = 250; // 메뉴의 너비
 
 function Expenses() {
   const colors = useThemeContext((s) => s.colors());
-  const [selectedCategory, setSelectedCategory] = useState(fakeCategories[0]);
+  const [categories, setCategories] = useState<CategoryType[]>();
+  const initialCategory = categories ? categories[0] : undefined;
+  const [selectedCategory, setSelectedCategory] = useState<
+    CategoryType | undefined
+  >(initialCategory);
   const [showDatePicker, setShowDatePicker] = useState(false);
   const [date, setDate] = useState(new Date());
 
@@ -124,38 +119,39 @@ function Expenses() {
         }}
       >
         <ScrollView horizontal showsHorizontalScrollIndicator={false}>
-          {fakeCategories.map((c, index) => (
-            <TouchableOpacity
-              style={{
-                flex: 1,
-                backgroundColor:
-                  selectedCategory === c
-                    ? colors.tabInactiveTint
-                    : "transparent",
-                borderColor: colors.border,
-                borderStyle: "solid",
-                borderWidth: 0.5,
-                marginRight: 10,
-                borderRadius: 10,
-                justifyContent: "center", // 수직 중앙 정렬
-                alignItems: "center",
-                padding: 10,
-              }}
-              key={index.toString()}
-              onPress={() => {
-                setSelectedCategory(c);
-              }}
-            >
-              <Text
+          {categories &&
+            categories.map((c, index) => (
+              <TouchableOpacity
                 style={{
-                  color: colors.text,
-                  fontSize: 15,
+                  flex: 1,
+                  backgroundColor:
+                    selectedCategory === c
+                      ? colors.tabInactiveTint
+                      : "transparent",
+                  borderColor: colors.border,
+                  borderStyle: "solid",
+                  borderWidth: 0.5,
+                  marginRight: 10,
+                  borderRadius: 10,
+                  justifyContent: "center", // 수직 중앙 정렬
+                  alignItems: "center",
+                  padding: 10,
+                }}
+                key={index.toString()}
+                onPress={() => {
+                  setSelectedCategory(c);
                 }}
               >
-                {c}
-              </Text>
-            </TouchableOpacity>
-          ))}
+                <Text
+                  style={{
+                    color: colors.text,
+                    fontSize: 15,
+                  }}
+                >
+                  {c.category}
+                </Text>
+              </TouchableOpacity>
+            ))}
         </ScrollView>
         <View
           style={{
