@@ -3,31 +3,31 @@ import { db } from "./index";
 
 const DEFAULT_CATEGORIES = [
   {
-    category: "food/drink",
+    title: "food/drink",
     ionicIconName: "fast-food-outline",
   },
   {
-    category: "clothing/shoes",
+    title: "clothing/shoes",
     ionicIconName: "shirt-outline",
   },
   {
-    category: "transport",
+    title: "transport",
     ionicIconName: "car-outline",
   },
   {
-    category: "education",
+    title: "education",
     ionicIconName: "book-outline",
   },
   {
-    category: "gifts/donations",
+    title: "gifts/donations",
     ionicIconName: "gift-outline",
   },
   {
-    category: "entertainment",
+    title: "entertainment",
     ionicIconName: "game-controller-outline",
   },
   {
-    category: "house",
+    title: "house",
     ionicIconName: "construct-outline",
   },
 ];
@@ -37,7 +37,7 @@ export async function initializeDatabase() {
     await db
       .insert(categories)
       .values({
-        category: cat.category,
+        title: cat.title,
         ionicIconName: cat.ionicIconName,
         isDefault: true,
       })
@@ -49,6 +49,6 @@ export async function initializeDatabase() {
   const allCategories = await db.query.categories.findMany();
   console.log(
     "All categories:",
-    allCategories.map((c) => c.category)
+    allCategories.map((c) => c.title)
   );
 }

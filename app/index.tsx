@@ -43,12 +43,30 @@ function Index() {
         placeholderTextColor={colors.title}
       />
 
-      <TouchableOpacity onPress={() => {}} style={styles.button}>
+      <TouchableOpacity
+        onPress={() => {}}
+        style={{
+          marginTop: 20,
+          alignItems: "center",
+          padding: 12,
+          borderRadius: 4,
+        }}
+      >
         <Text style={{ color: colors.text }}>Sign in</Text>
       </TouchableOpacity>
 
-      <Link href="/(tabs)" asChild>
-        <TouchableOpacity style={styles.outlineButton}>
+      <Link href="/register" asChild>
+        <TouchableOpacity
+          style={{
+            marginVertical: 8,
+            alignItems: "center",
+            backgroundColor: "transparent",
+            padding: 12,
+            borderRadius: 4,
+            borderWidth: 1,
+            borderColor: colors.border,
+          }}
+        >
           <Text style={{ color: colors.text }}>Create Account</Text>
         </TouchableOpacity>
       </Link>
@@ -86,20 +104,8 @@ const styles = StyleSheet.create({
     borderRadius: 4,
     padding: 10,
   },
-  button: {
-    marginTop: 20,
-    alignItems: "center",
-    padding: 12,
-    borderRadius: 4,
-  },
-  outlineButton: {
-    marginVertical: 8,
-    alignItems: "center",
-    backgroundColor: "transparent",
-    padding: 12,
-    borderRadius: 4,
-    borderWidth: 1,
-  },
+  button: {},
+  outlineButton: {},
 });
 
 export default Index;

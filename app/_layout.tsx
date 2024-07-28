@@ -5,13 +5,11 @@ import { useEffect } from "react";
 import ThemeProvider from "@/context/ThemeProvider";
 import { Slot, Stack } from "expo-router";
 import { StatusBar } from "expo-status-bar";
-import { initializeDatabase } from "@/db/initialize";
 import { useDrizzleStudio } from "expo-drizzle-studio-plugin";
-import { db, expoDb } from "@/db";
-import { useMigrations } from "drizzle-orm/expo-sqlite/migrator";
-import migrations from "@/drizzle/migrations";
+import { expoDb } from "@/db";
 import AuthProvider from "@/context/AuthProvider";
-import useAuthContext from "@/hooks/useAuthContext";
+import { useAuthContext } from "@/hooks/useAuthContext";
+import { useInitializeDatabase } from "@/hooks/useInitializeDatabase";
 
 export {
   // Catch any errors thrown by the Layout component.
@@ -26,27 +24,22 @@ function InitialLayout() {
     SpaceMono: require("../assets/fonts/SpaceMono-Regular.ttf"),
     ...FontAwesome.font,
   });
-  const { success, error: migrationsError } = useMigrations(db, migrations);
-  const { initialized } = useAuthContext();
+  const [initialized, dbErrorMessage] = useInitializeDatabase();
+  const authUser = useAuthContext((s) => s.authUser);
+
   useEffect(() => {
-    async function initializeDb() {
-      try {
-        await initializeDatabase();
-      } catch (e) {
-        console.error(e);
-      }
-    }
-    if (loaded) {
-      initializeDb();
+    if (loaded && initialized) {
       SplashScreen.hideAsync();
     }
-  }, [loaded]);
+  }, [loaded, initialized]);
 
-  if (!loaded || !success || !initialized) {
-    return <Slot />;
+  if (!loaded || !initialized) {
+    return null;
   }
 
-  console.log(success, migrationsError);
+  if (!authUser) {
+    return <Slot />;
+  }
 
   return (
     <>
