@@ -148,7 +148,7 @@ function Expenses() {
                     fontSize: 15,
                   }}
                 >
-                  {c.category}
+                  {c.title}
                 </Text>
               </TouchableOpacity>
             ))}
