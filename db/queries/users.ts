@@ -20,7 +20,7 @@ export const getUserByEmail = async (
   return getUserByEmailQuery.get({ email });
 };
 
-export const insertUserQuery = db
+const insertUserQuery = db
   .insert(users)
   .values({
     email: sql.placeholder("email"),

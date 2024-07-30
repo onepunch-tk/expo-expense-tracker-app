@@ -1,8 +1,7 @@
 import { logger } from "@/store/logger";
 import { createStore } from "zustand";
 import { AuthState } from "@/store/auth/interfaces";
-import { db, users } from "@/db";
-import { eq } from "drizzle-orm";
+import { getUserByEmail, insertUser } from "@/db/queries/users";
 
 export type AuthStore = ReturnType<typeof createAuthStore>;
 
@@ -19,20 +18,14 @@ export const createAuthStore = () => {
         set({ authUser: undefined });
       },
       onRegister: async (email, password) => {
-        const existingUser = await db.query.users.findFirst({
-          where: eq(users.email, email),
-        });
+        const existingUser = await getUserByEmail(email);
         if (existingUser) {
           return {
             success: false,
             error: "This email address already exists.",
           };
         }
-
-        await db.insert(users).values({
-          email,
-          password,
-        });
+        await insertUser(email, password);
 
         return {
           success: true,

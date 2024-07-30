@@ -9,7 +9,6 @@ import {
 } from "react-native";
 import { useThemeContext } from "@/hooks/useThemeContext";
 import Stack from "expo-router/stack";
-import { useRouter } from "expo-router";
 import { useState } from "react";
 import { useAuthContext } from "@/hooks/useAuthContext";
 
@@ -20,9 +19,11 @@ function Register() {
   const [loading, setLoading] = useState(false);
 
   const onRegister = useAuthContext((s) => s.onRegister);
-  const router = useRouter();
 
-  const handleRegister = () => {};
+  const handleRegister = async () => {
+    if (!email || !password) return;
+    const { success, error } = await onRegister(email, password);
+  };
 
   return (
     <View style={[styles.container, { backgroundColor: colors.background }]}>
@@ -49,7 +50,10 @@ function Register() {
         placeholder="Enter your Email..."
         value={email}
         onChangeText={setEmail}
-        style={[styles.inputField, { borderColor: colors.border }]}
+        style={[
+          styles.inputField,
+          { borderColor: colors.border, color: colors.title },
+        ]}
         placeholderTextColor={colors.title}
       />
       <TextInput
@@ -57,7 +61,10 @@ function Register() {
         value={password}
         onChangeText={setPassword}
         secureTextEntry
-        style={[styles.inputField, { borderColor: colors.border }]}
+        style={[
+          styles.inputField,
+          { borderColor: colors.border, color: colors.title },
+        ]}
         placeholderTextColor={colors.title}
       />
 
@@ -96,12 +103,6 @@ const styles = StyleSheet.create({
     width: "100%",
     height: 100,
     resizeMode: "contain",
-  },
-  subheader: {
-    fontSize: 18,
-    textAlign: "center",
-    marginBottom: 40,
-    color: "#fff",
   },
   inputField: {
     marginVertical: 4,
