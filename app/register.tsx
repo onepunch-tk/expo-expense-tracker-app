@@ -31,6 +31,12 @@ function Register() {
           headerShown: true,
           title: "Create Account",
           headerBackTitle: "Sing in",
+          headerTitleStyle: {
+            color: colors.title,
+          },
+          headerStyle: {
+            backgroundColor: colors.background,
+          },
         }}
       />
       <Image
