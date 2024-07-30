@@ -3,8 +3,8 @@
 │   ├── (tabs)
 │   │   ├── _layout.tsx
 │   │   ├── categories.tsx
-│   │   ├── index.tsx
-│   │   └── settings.tsx
+│   │   ├── home.tsx
+│   │   └── home.tsx
 │   ├── +html.tsx
 │   ├── +not-found.tsx
 │   ├── TestComponenet.tsx

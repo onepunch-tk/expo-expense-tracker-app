@@ -39,7 +39,7 @@ function InitialLayout() {
       if (isAuthGroup && !authUser) {
         router.replace("/");
       } else if (!isAuthGroup && authUser) {
-        router.replace("/(tabs)");
+        router.replace("/(tabs)/home");
       }
     }
   }, [loaded, initialized, authUser, segments]);

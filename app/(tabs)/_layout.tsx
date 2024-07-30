@@ -1,14 +1,16 @@
-import { Tabs } from "expo-router";
+import { Tabs, useNavigation } from "expo-router";
 import { useThemeContext } from "@/hooks/useThemeContext";
 import GradientBackground from "@/components/GradientBackground";
 import { Ionicons } from "@expo/vector-icons";
 import HeaderShadowBtn from "@/components/HeaderShadowBtn";
-import { Appearance } from "react-native";
+import { DrawerActions } from "@react-navigation/native";
 
 function Layout() {
   const colors = useThemeContext((s) => s.colors());
+  const navigation = useNavigation();
   return (
     <Tabs
+      initialRouteName={"home"}
       sceneContainerStyle={{ backgroundColor: colors.background }}
       screenOptions={{
         headerStyle: { backgroundColor: colors.background, height: 130 },
@@ -32,7 +34,7 @@ function Layout() {
       }}
     >
       <Tabs.Screen
-        name="index"
+        name="home"
         options={{
           headerTitle: "Expenses Tracker",
           headerRight: () => (
@@ -70,10 +72,11 @@ function Layout() {
               title="New"
             />
           ),
+          tabBarLabel: "Categories",
         }}
       />
       <Tabs.Screen
-        name="settings"
+        name="(drawer)"
         options={{
           headerTitle: "Settings",
           tabBarIcon: ({ focused, size, color }) => (
@@ -83,6 +86,18 @@ function Layout() {
               color={color}
             />
           ),
+          headerRight: () => (
+            <Ionicons
+              name="menu"
+              size={24}
+              color={colors.title}
+              style={{ marginRight: 15 }}
+              onPress={() => {
+                navigation.dispatch(DrawerActions.toggleDrawer());
+              }}
+            />
+          ),
+          tabBarLabel: "Settings",
         }}
       />
     </Tabs>
