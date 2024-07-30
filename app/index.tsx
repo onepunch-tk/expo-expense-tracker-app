@@ -9,11 +9,23 @@ import {
 import { useThemeContext } from "@/hooks/useThemeContext";
 import { useState } from "react";
 import { Link } from "expo-router";
+import { useAuthContext } from "@/hooks/useAuthContext";
 
 function Index() {
   const [email, setEmail] = useState<string>("");
   const [password, setPassword] = useState<string>("");
   const colors = useThemeContext((s) => s.colors());
+  const onLogin = useAuthContext((s) => s.onLogin);
+  const handleLogin = async () => {
+    if (!email || !password) {
+      return;
+    }
+    const { success, error } = await onLogin(email, password);
+    if (!success) {
+      console.error(error);
+      return;
+    }
+  };
   return (
     <View style={[styles.container, { backgroundColor: colors.background }]}>
       <Image
@@ -44,7 +56,7 @@ function Index() {
       />
 
       <TouchableOpacity
-        onPress={() => {}}
+        onPress={handleLogin}
         style={{
           marginTop: 20,
           alignItems: "center",

@@ -6,6 +6,7 @@ import { initializeDatabase } from "@/db/initialize";
 
 export const useInitializeDatabase = () => {
   const { success, error: migrationError } = useMigrations(db, migrations);
+
   const [initialized, setInitialized] = useState(false);
   const [error, setError] = useState<string>("");
   useEffect(() => {

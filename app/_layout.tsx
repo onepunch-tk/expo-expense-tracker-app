@@ -11,6 +11,7 @@ import AuthProvider from "@/context/AuthProvider";
 import { useAuthContext } from "@/hooks/useAuthContext";
 import { useInitializeDatabase } from "@/hooks/useInitializeDatabase";
 import { router, useSegments } from "expo-router";
+import { useThemeContext } from "@/hooks/useThemeContext";
 
 export {
   // Catch any errors thrown by the Layout component.
@@ -27,29 +28,29 @@ function InitialLayout() {
   });
   const [initialized, dbErrorMessage] = useInitializeDatabase();
   const authUser = useAuthContext((s) => s.authUser);
+  const theme = useThemeContext((s) => s.theme);
   const segments = useSegments();
-  const isAuthGroup = segments[0] === "(tabs)";
-  console.log(segments, isAuthGroup);
+  useDrizzleStudio(expoDb as any);
 
   useEffect(() => {
     if (loaded && initialized) {
       SplashScreen.hideAsync();
+      const isAuthGroup = segments[0] === "(tabs)";
+      if (isAuthGroup && !authUser) {
+        router.replace("/");
+      } else if (!isAuthGroup && authUser) {
+        router.replace("/(tabs)");
+      }
     }
-  }, [loaded, initialized]);
+  }, [loaded, initialized, authUser, segments]);
 
   if (!loaded || !initialized) {
     return null;
   }
 
-  if (isAuthGroup && authUser) {
-    router.replace("/(tabs)");
-  } else if (!authUser && isAuthGroup) {
-    router.replace("/");
-  }
-
   return (
     <>
-      <StatusBar style={"auto"} />
+      <StatusBar style={theme === "light" ? "dark" : "light"} />
       <Stack screenOptions={{ headerShown: false }}>
         <Stack.Screen name={"index"} />
         <Stack.Screen name={"register"} />
@@ -60,7 +61,6 @@ function InitialLayout() {
 }
 
 export default function RootLayout() {
-  useDrizzleStudio(expoDb as any);
   return (
     <ThemeProvider>
       <AuthProvider>

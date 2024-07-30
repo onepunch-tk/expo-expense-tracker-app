@@ -11,6 +11,7 @@ import { useThemeContext } from "@/hooks/useThemeContext";
 import Stack from "expo-router/stack";
 import { useState } from "react";
 import { useAuthContext } from "@/hooks/useAuthContext";
+import { router } from "expo-router";
 
 function Register() {
   const colors = useThemeContext((s) => s.colors());
@@ -23,6 +24,12 @@ function Register() {
   const handleRegister = async () => {
     if (!email || !password) return;
     const { success, error } = await onRegister(email, password);
+    if (!success) {
+      console.error(error);
+      return;
+    }
+
+    router.replace("/");
   };
 
   return (
