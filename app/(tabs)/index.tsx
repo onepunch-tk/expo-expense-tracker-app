@@ -7,10 +7,12 @@ import {
 } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import { useThemeContext } from "@/hooks/useThemeContext";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import BottomSlidingModal from "@/components/BottomSlidingModal";
 import SpinDatePicker from "@/components/SpinDatePicker";
 import DashBorder from "@/components/DashBorder";
+import { getCategoriesByUserId } from "@/db/queries/categories";
+import { userCategoryStore } from "@/store/category/categoryStore";
 import { CategoryType } from "@/db/types";
 
 const fakeExpenseData = [
@@ -101,13 +103,25 @@ const MENU_WIDTH = 250; // 메뉴의 너비
 
 function Expenses() {
   const colors = useThemeContext((s) => s.colors());
-  const [categories, setCategories] = useState<CategoryType[]>();
-  const initialCategory = categories ? categories[0] : undefined;
-  const [selectedCategory, setSelectedCategory] = useState<
-    CategoryType | undefined
-  >(initialCategory);
   const [showDatePicker, setShowDatePicker] = useState(false);
   const [date, setDate] = useState(new Date());
+  const [selectedCategory, setSelectedCategory] = useState<CategoryType>();
+  const { initialCategories, categories, addCategory } = userCategoryStore(
+    (s) => ({
+      initialCategories: s.initialCategories,
+      categories: s.categories,
+      addCategory: s.addCategory,
+    })
+  );
+  useEffect(() => {
+    (async () => {
+      const dbCategories = await getCategoriesByUserId()(1);
+      initialCategories(dbCategories);
+      if (dbCategories.length > 0) {
+        setSelectedCategory(dbCategories[0]);
+      }
+    })();
+  }, []);
 
   return (
     <View style={{ flex: 1 }}>

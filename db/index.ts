@@ -4,10 +4,12 @@ import { expenses } from "./schema/expense.schema";
 import { users } from "./schema/user.schema";
 import { openDatabaseSync } from "expo-sqlite/next";
 import { relations } from "drizzle-orm";
+import { userToCategories } from "@/db/schema/users-to-categories.schema";
 
 export * from "./schema/user.schema";
 export * from "./schema/expense.schema";
 export * from "./schema/category.schema";
+export * from "./schema/users-to-categories.schema";
 
 export const usersRelations = relations(users, ({ many }) => ({
   expenses: many(expenses),
@@ -17,6 +19,19 @@ export const categoriesRelations = relations(categories, ({ many }) => ({
   expenses: many(expenses),
   users: many(users),
 }));
+export const userCategoriesRelations = relations(
+  userToCategories,
+  ({ one }) => ({
+    user: one(users, {
+      fields: [userToCategories.userId],
+      references: [users.id],
+    }),
+    category: one(categories, {
+      fields: [userToCategories.categoryId],
+      references: [categories.id],
+    }),
+  })
+);
 export const expensesRelations = relations(expenses, ({ one }) => ({
   user: one(users, {
     fields: [expenses.userId],
@@ -28,16 +43,18 @@ export const expensesRelations = relations(expenses, ({ one }) => ({
   }),
 }));
 
-export const expoDb = openDatabaseSync("sqlite.db");
 const schema = {
   users,
   expenses,
   categories,
   usersRelations,
+  userToCategories,
+  userCategoriesRelations,
   expensesRelations,
   categoriesRelations,
 };
 
+export const expoDb = openDatabaseSync("sqlite.db");
 export const db = drizzle(expoDb, { logger: true, schema });
 
 /*

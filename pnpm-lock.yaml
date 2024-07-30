@@ -59,6 +59,9 @@ importers:
       expo-web-browser:
         specifier: ~12.8.2
         version: 12.8.2(expo@50.0.19(@babel/core@7.24.9)(@react-native/babel-preset@0.74.85(@babel/core@7.24.9)(@babel/preset-env@7.24.8(@babel/core@7.24.9))))
+      immer:
+        specifier: ^10.1.1
+        version: 10.1.1
       react:
         specifier: 18.2.0
         version: 18.2.0
@@ -79,7 +82,7 @@ importers:
         version: 0.19.12(react-dom@18.2.0(react@18.2.0))(react@18.2.0)
       zustand:
         specifier: ^4.5.4
-        version: 4.5.4(@types/react@18.2.79)(react@18.2.0)
+        version: 4.5.4(@types/react@18.2.79)(immer@10.1.1)(react@18.2.0)
     devDependencies:
       '@babel/core':
         specifier: ^7.20.0
@@ -3041,6 +3044,9 @@ packages:
 
   immediate@3.3.0:
     resolution: {integrity: sha512-HR7EVodfFUdQCTIeySw+WDRFJlPcLOJbXfwwZ7Oom6tjsvZ3bOkCDJHehQC3nxJrv7+f9XecwazynjU8e4Vw3Q==}
+
+  immer@10.1.1:
+    resolution: {integrity: sha512-s2MPrmjovJcoMaHtx6K11Ra7oD05NT97w1IC5zpMkT6Atjr7H8LjaDd81iIxUYpMKSRRNMJE703M1Fhr/TctHw==}
 
   import-fresh@2.0.0:
     resolution: {integrity: sha512-eZ5H8rcgYazHbKC3PG4ClHNykCSxtAhxSSEM+2mb+7evD2CKF5V7c0dNum7AdpDh0ZdICwZY9sRSn8f+KH96sg==}
@@ -9089,6 +9095,8 @@ snapshots:
 
   immediate@3.3.0: {}
 
+  immer@10.1.1: {}
+
   import-fresh@2.0.0:
     dependencies:
       caller-path: 2.0.0
@@ -11591,9 +11599,10 @@ snapshots:
 
   yocto-queue@0.1.0: {}
 
-  zustand@4.5.4(@types/react@18.2.79)(react@18.2.0):
+  zustand@4.5.4(@types/react@18.2.79)(immer@10.1.1)(react@18.2.0):
     dependencies:
       use-sync-external-store: 1.2.0(react@18.2.0)
     optionalDependencies:
       '@types/react': 18.2.79
+      immer: 10.1.1
       react: 18.2.0
