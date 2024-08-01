@@ -1,19 +1,19 @@
 import { create } from "zustand";
-import { CategoryType } from "@/db/types";
+import { Category, CategoryWithExpensesCount } from "@/db/types";
 import { immer } from "zustand/middleware/immer";
 
 interface CategoryState {
-  categories: CategoryType[];
-  addCategory: (category: CategoryType) => void;
+  categories: CategoryWithExpensesCount[];
+  addCategory: (category: Category) => void;
   removeCategory: (id: number) => void;
-  initialCategories: (initialCategories: CategoryType[]) => void;
+  initialCategories: (initialCategories: CategoryWithExpensesCount[]) => void;
 }
 export const userCategoryStore = create<CategoryState>()(
   immer((set, get, store) => ({
     categories: [],
     addCategory: (newCategory) => {
       set((state) => {
-        state.categories.push({ ...newCategory });
+        state.categories.push({ ...newCategory, expenseCount: 0 });
       });
     },
     removeCategory: (id) => {

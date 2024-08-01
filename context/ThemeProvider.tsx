@@ -1,7 +1,9 @@
 import { createContext, PropsWithChildren, useRef } from "react";
 import { createThemeStore, ThemeStore } from "@/store/theme/themeStore";
+import { createContextStore } from "@/store/helpers";
 
-export const ThemeContext = createContext<ThemeStore | null>(null);
+const ThemeContext = createContext<ThemeStore | null>(null);
+export const useThemeContext = createContextStore(ThemeContext, "ThemeContext");
 
 function ThemeProvider({ children }: PropsWithChildren) {
   const storeRef = useRef<ThemeStore>();

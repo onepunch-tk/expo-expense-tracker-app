@@ -6,16 +6,23 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
-import { useThemeContext } from "@/hooks/useThemeContext";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Link } from "expo-router";
-import { useAuthContext } from "@/hooks/useAuthContext";
+import { useThemeContext } from "@/context/ThemeProvider";
+import { useAuthContext } from "@/context/AuthProvider";
+import { initializeCategories } from "@/db/queries/categories";
 
 function Index() {
   const [email, setEmail] = useState<string>("");
   const [password, setPassword] = useState<string>("");
   const colors = useThemeContext((s) => s.colors());
   const onLogin = useAuthContext((s) => s.onLogin);
+
+  useEffect(() => {
+    (async () => {
+      await initializeCategories();
+    })();
+  }, []);
   const handleLogin = async () => {
     if (!email || !password) {
       return;

@@ -1,7 +1,7 @@
-import { UserType } from "@/db/types";
+import { User } from "@/db/types";
 
 export interface AuthProps {
-  authUser?: Pick<UserType, "email" | "id">;
+  authUser?: Pick<User, "email" | "id">;
 }
 export interface AuthState extends AuthProps {
   onRegister: (email: string, password: string) => Promise<AuthResponse>;

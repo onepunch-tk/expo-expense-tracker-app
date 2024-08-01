@@ -1,9 +1,9 @@
 import { Tabs, useNavigation } from "expo-router";
-import { useThemeContext } from "@/hooks/useThemeContext";
 import GradientBackground from "@/components/GradientBackground";
 import { Ionicons } from "@expo/vector-icons";
 import HeaderShadowBtn from "@/components/HeaderShadowBtn";
 import { DrawerActions } from "@react-navigation/native";
+import { useThemeContext } from "@/context/ThemeProvider";
 
 function Layout() {
   const colors = useThemeContext((s) => s.colors());

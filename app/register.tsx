@@ -7,11 +7,11 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
-import { useThemeContext } from "@/hooks/useThemeContext";
 import Stack from "expo-router/stack";
 import { useState } from "react";
-import { useAuthContext } from "@/hooks/useAuthContext";
 import { router } from "expo-router";
+import { useThemeContext } from "@/context/ThemeProvider";
+import { useAuthContext } from "@/context/AuthProvider";
 
 function Register() {
   const colors = useThemeContext((s) => s.colors());

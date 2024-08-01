@@ -2,16 +2,13 @@ import FontAwesome from "@expo/vector-icons/FontAwesome";
 import { useFonts } from "expo-font";
 import * as SplashScreen from "expo-splash-screen";
 import { useEffect } from "react";
-import ThemeProvider from "@/context/ThemeProvider";
+import ThemeProvider, { useThemeContext } from "@/context/ThemeProvider";
 import { Stack } from "expo-router/stack";
 import { StatusBar } from "expo-status-bar";
-import { useDrizzleStudio } from "expo-drizzle-studio-plugin";
-import { expoDb } from "@/db";
-import AuthProvider from "@/context/AuthProvider";
-import { useAuthContext } from "@/hooks/useAuthContext";
-import { useInitializeDatabase } from "@/hooks/useInitializeDatabase";
+import AuthProvider, { useAuthContext } from "@/context/AuthProvider";
 import { router, useSegments } from "expo-router";
-import { useThemeContext } from "@/hooks/useThemeContext";
+import DatabaseProvider from "@/context/DatabaseProvider";
+import { useDrizzleStudioHelper, useMigrationHelper } from "@/db/dirzzle";
 
 export {
   // Catch any errors thrown by the Layout component.
@@ -26,14 +23,14 @@ function InitialLayout() {
     SpaceMono: require("../assets/fonts/SpaceMono-Regular.ttf"),
     ...FontAwesome.font,
   });
-  const [initialized, dbErrorMessage] = useInitializeDatabase();
   const authUser = useAuthContext((s) => s.authUser);
   const theme = useThemeContext((s) => s.theme);
   const segments = useSegments();
-  useDrizzleStudio(expoDb as any);
-
+  const { success, error: migrationsError } = useMigrationHelper();
+  useDrizzleStudioHelper();
+  // useDrizzleStudio(expoDb as any);
   useEffect(() => {
-    if (loaded && initialized) {
+    if (loaded && success) {
       SplashScreen.hideAsync();
       const isAuthGroup = segments[0] === "(tabs)";
       if (isAuthGroup && !authUser) {
@@ -42,9 +39,9 @@ function InitialLayout() {
         router.replace("/(tabs)/home");
       }
     }
-  }, [loaded, initialized, authUser, segments]);
+  }, [loaded, success, authUser, segments]);
 
-  if (!loaded || !initialized) {
+  if (!loaded || !success) {
     return null;
   }
 
@@ -62,10 +59,12 @@ function InitialLayout() {
 
 export default function RootLayout() {
   return (
-    <ThemeProvider>
-      <AuthProvider>
-        <InitialLayout />
-      </AuthProvider>
-    </ThemeProvider>
+    <DatabaseProvider>
+      <ThemeProvider>
+        <AuthProvider>
+          <InitialLayout />
+        </AuthProvider>
+      </ThemeProvider>
+    </DatabaseProvider>
   );
 }
