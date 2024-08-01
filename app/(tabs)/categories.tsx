@@ -79,7 +79,7 @@ function Categories() {
             >
               <View
                 style={{
-                  alignItems: "start",
+                  alignItems: "flex-start",
                   flex: 1,
                   justifyContent: "space-between",
                 }}

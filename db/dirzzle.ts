@@ -1,18 +1,34 @@
-import migrations from "@/db/migrations/migrations";
-import { useMigrations } from "drizzle-orm/expo-sqlite/migrator";
-import { openDatabaseSync } from "expo-sqlite/next";
-import { drizzle } from "drizzle-orm/expo-sqlite";
+import { openDatabaseAsync, SQLiteDatabase } from "expo-sqlite/next";
+import { drizzle, ExpoSQLiteDatabase } from "drizzle-orm/expo-sqlite";
 import { DbType } from "@/db/types";
 import { useDrizzleStudio } from "expo-drizzle-studio-plugin";
+import * as schema from "./schema";
+import * as relations from "./relations";
+import { migrate } from "drizzle-orm/expo-sqlite/migrator";
+import migrations from "@/db/migrations/migrations";
 
-const expoDb = openDatabaseSync("database.db", { enableChangeListener: true });
-export const db = drizzle(expoDb);
+let expoDb: SQLiteDatabase;
+let db: DbType;
 
-export const initialize = (): Promise<DbType> => {
+export const initialize = async (): Promise<DbType> => {
+  if (!expoDb && !db) {
+    console.log("open my local db...");
+    expoDb = await openDatabaseAsync("database.db", {
+      enableChangeListener: true,
+    });
+    console.log("open success my db: ", expoDb);
+    db = drizzle(expoDb, { schema: { ...schema, ...relations } });
+    console.log("make success drizzle: ", db);
+  }
+
   return Promise.resolve(db);
 };
-export const useMigrationHelper = () => {
-  return useMigrations(db, migrations);
+export const runMigrations = async (db: DbType | null) => {
+  const { journal, migrations: dbMigrations } = migrations;
+  await migrate(db as ExpoSQLiteDatabase, {
+    journal,
+    migrations: dbMigrations,
+  });
 };
 
 export const useDrizzleStudioHelper = () => {

@@ -1,11 +1,19 @@
-import { User } from "@/db/types";
+import { DbType, User } from "@/db/types";
 
 export interface AuthProps {
   authUser?: Pick<User, "email" | "id">;
 }
 export interface AuthState extends AuthProps {
-  onRegister: (email: string, password: string) => Promise<AuthResponse>;
-  onLogin: (email: string, password: string) => Promise<AuthResponse>;
+  onRegister: (
+    db: DbType | null,
+    email: string,
+    password: string
+  ) => Promise<AuthResponse>;
+  onLogin: (
+    db: DbType | null,
+    email: string,
+    password: string
+  ) => Promise<AuthResponse>;
   onLogout: () => Promise<void>;
 }
 

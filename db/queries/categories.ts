@@ -1,7 +1,7 @@
 import { categories, expenses } from "@/db/schema";
-import { CategoryWithExpensesCount } from "@/db/types";
+import { CategoryWithExpensesCount, DbType } from "@/db/types";
 import { count, eq, or } from "drizzle-orm";
-import { db } from "@/db/dirzzle";
+import { ExpoSQLiteDatabase } from "drizzle-orm/expo-sqlite";
 
 const DEFAULT_CATEGORIES = [
   {
@@ -47,9 +47,10 @@ const DEFAULT_CATEGORIES = [
   },
 ];
 export async function getCategories(
+  db: DbType | null,
   userId: number
 ): Promise<CategoryWithExpensesCount[]> {
-  return db
+  return (db as ExpoSQLiteDatabase)
     .select({
       id: categories.id,
       name: categories.name,
@@ -64,16 +65,16 @@ export async function getCategories(
     .groupBy(categories.id);
 }
 
-export async function initializeCategories() {
+export async function initializeCategories(db: DbType | null) {
   const allCategories = await db
-    .select()
+    ?.select()
     .from(categories)
     .where(eq(categories.isDefault, true));
-  const categoryNames = allCategories.map((c) => c.name);
+  const categoryNames = allCategories?.map((c) => c.name);
 
-  DEFAULT_CATEGORIES.filter((d) => !categoryNames.includes(d.name)).map(
+  DEFAULT_CATEGORIES.filter((d) => !categoryNames?.includes(d.name)).map(
     async (c) =>
-      await db.insert(categories).values({
+      await db?.insert(categories).values({
         name: c.name,
         ionicIconName: c.ionicIconName,
         isDefault: true,
@@ -85,6 +86,6 @@ export async function initializeCategories() {
 
   console.log(
     "All categories:",
-    allCategories.map((c) => c.name)
+    allCategories?.map((c) => c.name)
   );
 }

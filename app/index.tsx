@@ -11,23 +11,25 @@ import { Link } from "expo-router";
 import { useThemeContext } from "@/context/ThemeProvider";
 import { useAuthContext } from "@/context/AuthProvider";
 import { initializeCategories } from "@/db/queries/categories";
+import { useDatabase } from "@/context/DatabaseProvider";
 
 function Index() {
   const [email, setEmail] = useState<string>("");
   const [password, setPassword] = useState<string>("");
   const colors = useThemeContext((s) => s.colors());
   const onLogin = useAuthContext((s) => s.onLogin);
+  const { db } = useDatabase();
 
   useEffect(() => {
     (async () => {
-      await initializeCategories();
+      await initializeCategories(db);
     })();
   }, []);
   const handleLogin = async () => {
     if (!email || !password) {
       return;
     }
-    const { success, error } = await onLogin(email, password);
+    const { success, error } = await onLogin(db, email, password);
     if (!success) {
       console.error(error);
       return;

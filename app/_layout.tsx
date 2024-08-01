@@ -7,8 +7,8 @@ import { Stack } from "expo-router/stack";
 import { StatusBar } from "expo-status-bar";
 import AuthProvider, { useAuthContext } from "@/context/AuthProvider";
 import { router, useSegments } from "expo-router";
-import DatabaseProvider from "@/context/DatabaseProvider";
-import { useDrizzleStudioHelper, useMigrationHelper } from "@/db/dirzzle";
+import DatabaseProvider, { useDatabase } from "@/context/DatabaseProvider";
+import { useDrizzleStudioHelper } from "@/db/dirzzle";
 
 export {
   // Catch any errors thrown by the Layout component.
@@ -26,11 +26,14 @@ function InitialLayout() {
   const authUser = useAuthContext((s) => s.authUser);
   const theme = useThemeContext((s) => s.theme);
   const segments = useSegments();
-  const { success, error: migrationsError } = useMigrationHelper();
+  const { db, isLoading, error: initDbError } = useDatabase();
+  console.log(
+    `total state - loaded: ${loaded}, success: ${db}, authUser: ${authUser}, segments: ${segments}`
+  );
   useDrizzleStudioHelper();
   // useDrizzleStudio(expoDb as any);
   useEffect(() => {
-    if (loaded && success) {
+    if (loaded && !isLoading) {
       SplashScreen.hideAsync();
       const isAuthGroup = segments[0] === "(tabs)";
       if (isAuthGroup && !authUser) {
@@ -39,9 +42,9 @@ function InitialLayout() {
         router.replace("/(tabs)/home");
       }
     }
-  }, [loaded, success, authUser, segments]);
+  }, [loaded, authUser, segments, isLoading]);
 
-  if (!loaded || !success) {
+  if (!loaded && isLoading) {
     return null;
   }
 

@@ -15,6 +15,7 @@ import { Category } from "@/db/types";
 import { getCategories } from "@/db/queries/categories";
 import { useThemeContext } from "@/context/ThemeProvider";
 import { useAuthContext } from "@/context/AuthProvider";
+import { useDatabase } from "@/context/DatabaseProvider";
 
 const fakeExpenseData = [
   {
@@ -108,6 +109,7 @@ function Expenses() {
   const [date, setDate] = useState(new Date());
   const [selectedCategory, setSelectedCategory] =
     useState<Pick<Category, "id" | "name">>();
+  const { db } = useDatabase();
   const { initialCategories, categories, addCategory } = userCategoryStore(
     (s) => ({
       initialCategories: s.initialCategories,
@@ -119,7 +121,7 @@ function Expenses() {
 
   useEffect(() => {
     (async () => {
-      const dbCategories = await getCategories(authUser?.id!!);
+      const dbCategories = await getCategories(db, authUser?.id!!);
       initialCategories(dbCategories);
       if (dbCategories.length > 0) {
         setSelectedCategory(dbCategories[0] as Pick<Category, "id" | "name">);

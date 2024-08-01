@@ -12,8 +12,8 @@ export const createAuthStore = () => {
     persist(
       logger((set, get) => ({
         authUser: undefined,
-        onLogin: async (email, password) => {
-          const findUser = await getUserByEmail(email);
+        onLogin: async (db, email, password) => {
+          const findUser = await getUserByEmail(db, email);
           if (!findUser) {
             return {
               success: false,
@@ -39,15 +39,15 @@ export const createAuthStore = () => {
         onLogout: async () => {
           set({ authUser: undefined });
         },
-        onRegister: async (email, password) => {
-          const existingUser = await getUserByEmail(email);
+        onRegister: async (db, email, password) => {
+          const existingUser = await getUserByEmail(db, email);
           if (existingUser) {
             return {
               success: false,
               error: "This email address already exists.",
             };
           }
-          await insertUser(email, password);
+          await insertUser(db, email, password);
 
           return {
             success: true,

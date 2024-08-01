@@ -5,23 +5,48 @@ import {
   useEffect,
   useState,
 } from "react";
-import { initialize } from "@/db/dirzzle";
+import { initialize, runMigrations } from "@/db/dirzzle";
 import { DbType } from "@/db/types";
 
-type ContextType = { db: DbType | null };
-export const DatabaseContext = createContext<ContextType>({ db: null });
+type DbContextType = {
+  db: DbType | null;
+  isLoading: boolean;
+  error: Error | null;
+};
+export const DatabaseContext = createContext<DbContextType>({
+  db: null,
+  isLoading: true,
+  error: null,
+});
 export const useDatabase = () => useContext(DatabaseContext);
+
 function DatabaseProvider({ children }: PropsWithChildren) {
-  const [db, setDb] = useState<DbType | null>(null);
+  const [state, setState] = useState<DbContextType>({
+    db: null,
+    isLoading: true,
+    error: null,
+  });
   useEffect(() => {
-    if (db) return;
-    initialize().then((newDb) => {
-      setDb(newDb);
-    });
+    if (state.db) return;
+    const initDb = async () => {
+      try {
+        const newDb = await initialize();
+        await runMigrations(newDb);
+        setState({ db: newDb, isLoading: false, error: null });
+      } catch (error) {
+        setState((prev) => ({
+          ...prev,
+          isLoading: false,
+          error: error as Error,
+        }));
+      }
+    };
+
+    initDb();
   }, []);
 
   return (
-    <DatabaseContext.Provider value={{ db }}>
+    <DatabaseContext.Provider value={state}>
       {children}
     </DatabaseContext.Provider>
   );

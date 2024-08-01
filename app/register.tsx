@@ -12,18 +12,20 @@ import { useState } from "react";
 import { router } from "expo-router";
 import { useThemeContext } from "@/context/ThemeProvider";
 import { useAuthContext } from "@/context/AuthProvider";
+import { useDatabase } from "@/context/DatabaseProvider";
 
 function Register() {
   const colors = useThemeContext((s) => s.colors());
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
+  const { db } = useDatabase();
 
   const onRegister = useAuthContext((s) => s.onRegister);
 
   const handleRegister = async () => {
     if (!email || !password) return;
-    const { success, error } = await onRegister(email, password);
+    const { success, error } = await onRegister(db, email, password);
     if (!success) {
       console.error(error);
       return;
