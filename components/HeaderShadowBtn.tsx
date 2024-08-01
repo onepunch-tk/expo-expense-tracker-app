@@ -5,7 +5,7 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
-import { useThemeContext } from "@/hooks/useThemeContext";
+import { useThemeContext } from "@/context/ThemeProvider";
 
 interface HeaderShadowBtnProps {
   backgroundColor: string;

@@ -1,61 +1,23 @@
-import { drizzle } from "drizzle-orm/expo-sqlite";
-import { categories } from "./schema/category.schema";
-import { expenses } from "./schema/expense.schema";
-import { users } from "./schema/user.schema";
+import migrations from "@/db/migrations/migrations";
+import { useMigrations } from "drizzle-orm/expo-sqlite/migrator";
 import { openDatabaseSync } from "expo-sqlite/next";
-import { relations } from "drizzle-orm";
-import { userToCategories } from "@/db/schema/users-to-categories.schema";
+import { drizzle } from "drizzle-orm/expo-sqlite";
+import { DbType } from "@/db/types";
+import { useDrizzleStudio } from "expo-drizzle-studio-plugin";
 
-export * from "./schema/user.schema";
-export * from "./schema/expense.schema";
-export * from "./schema/category.schema";
-export * from "./schema/users-to-categories.schema";
+const expoDb = openDatabaseSync("database.db", { enableChangeListener: true });
+export const db = drizzle(expoDb);
 
-export const usersRelations = relations(users, ({ many }) => ({
-  expenses: many(expenses),
-  categories: many(categories),
-}));
-export const categoriesRelations = relations(categories, ({ many }) => ({
-  expenses: many(expenses),
-  users: many(users),
-}));
-export const userCategoriesRelations = relations(
-  userToCategories,
-  ({ one }) => ({
-    user: one(users, {
-      fields: [userToCategories.userId],
-      references: [users.id],
-    }),
-    category: one(categories, {
-      fields: [userToCategories.categoryId],
-      references: [categories.id],
-    }),
-  })
-);
-export const expensesRelations = relations(expenses, ({ one }) => ({
-  user: one(users, {
-    fields: [expenses.userId],
-    references: [users.id],
-  }),
-  category: one(categories, {
-    fields: [expenses.categoryId],
-    references: [categories.id],
-  }),
-}));
-
-const schema = {
-  users,
-  expenses,
-  categories,
-  usersRelations,
-  userToCategories,
-  userCategoriesRelations,
-  expensesRelations,
-  categoriesRelations,
+export const initialize = (): Promise<DbType> => {
+  return Promise.resolve(db);
+};
+export const useMigrationHelper = () => {
+  return useMigrations(db, migrations);
 };
 
-export const expoDb = openDatabaseSync("sqlite.db");
-export const db = drizzle(expoDb, { logger: true, schema });
+export const useDrizzleStudioHelper = () => {
+  useDrizzleStudio(expoDb as any);
+};
 
 /*
 한번 더 문제가 생기면 해당 코드로 수정

@@ -1,5 +1,5 @@
 import { View } from "react-native";
-import { useThemeContext } from "@/hooks/useThemeContext";
+import { useThemeContext } from "@/context/ThemeProvider";
 
 interface DashBorderProps {
   marginVertical?: number;

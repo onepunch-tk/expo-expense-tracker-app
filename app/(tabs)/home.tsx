@@ -6,14 +6,15 @@ import {
   View,
 } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
-import { useThemeContext } from "@/hooks/useThemeContext";
 import { useEffect, useState } from "react";
 import BottomSlidingModal from "@/components/BottomSlidingModal";
 import SpinDatePicker from "@/components/SpinDatePicker";
 import DashBorder from "@/components/DashBorder";
-import { getCategoriesByUserId } from "@/db/queries/categories";
 import { userCategoryStore } from "@/store/category/categoryStore";
-import { CategoryType } from "@/db/types";
+import { Category } from "@/db/types";
+import { getCategories } from "@/db/queries/categories";
+import { useThemeContext } from "@/context/ThemeProvider";
+import { useAuthContext } from "@/context/AuthProvider";
 
 const fakeExpenseData = [
   {
@@ -105,7 +106,8 @@ function Expenses() {
   const colors = useThemeContext((s) => s.colors());
   const [showDatePicker, setShowDatePicker] = useState(false);
   const [date, setDate] = useState(new Date());
-  const [selectedCategory, setSelectedCategory] = useState<CategoryType>();
+  const [selectedCategory, setSelectedCategory] =
+    useState<Pick<Category, "id" | "name">>();
   const { initialCategories, categories, addCategory } = userCategoryStore(
     (s) => ({
       initialCategories: s.initialCategories,
@@ -113,12 +115,14 @@ function Expenses() {
       addCategory: s.addCategory,
     })
   );
+  const authUser = useAuthContext((s) => s.authUser);
+
   useEffect(() => {
     (async () => {
-      const dbCategories = await getCategoriesByUserId()(1);
+      const dbCategories = await getCategories(authUser?.id!!);
       initialCategories(dbCategories);
       if (dbCategories.length > 0) {
-        setSelectedCategory(dbCategories[0]);
+        setSelectedCategory(dbCategories[0] as Pick<Category, "id" | "name">);
       }
     })();
   }, []);
@@ -162,7 +166,7 @@ function Expenses() {
                     fontSize: 15,
                   }}
                 >
-                  {c.title}
+                  {c.name}
                 </Text>
               </TouchableOpacity>
             ))}

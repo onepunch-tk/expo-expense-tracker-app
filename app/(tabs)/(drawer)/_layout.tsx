@@ -5,9 +5,9 @@ import {
   DrawerItem,
   DrawerItemList,
 } from "@react-navigation/drawer";
-import { useAuthContext } from "@/hooks/useAuthContext";
-import { useThemeContext } from "@/hooks/useThemeContext";
 import { useNavigation } from "expo-router";
+import { useAuthContext } from "@/context/AuthProvider";
+import { useThemeContext } from "@/context/ThemeProvider";
 
 function CustomDrawerContent(props: DrawerContentComponentProps) {
   const onLogout = useAuthContext((s) => s.onLogout);

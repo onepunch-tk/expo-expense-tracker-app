@@ -1,14 +1,18 @@
 .
 ├── app
 │   ├── (tabs)
+│   │   ├── (drawer)
+│   │   │   ├── _layout.tsx
+│   │   │   └── index.tsx
 │   │   ├── _layout.tsx
 │   │   ├── categories.tsx
-│   │   ├── home.tsx
 │   │   └── home.tsx
 │   ├── +html.tsx
 │   ├── +not-found.tsx
 │   ├── TestComponenet.tsx
-│   └── _layout.tsx
+│   ├── _layout.tsx
+│   ├── index.tsx
+│   └── register.tsx
 ├── app.json
 ├── assets
 │   ├── fonts
@@ -25,34 +29,48 @@
 │   ├── DashBorder.tsx
 │   ├── GradientBackground.tsx
 │   ├── HeaderShadowBtn.tsx
-│   ├── SpinDatePicker.tsx
-│   └── ThemeProvider.tsx
+│   └── SpinDatePicker.tsx
 ├── constants
 │   └── Colors.ts
+├── context
+│   ├── AuthProvider.tsx
+│   └── ThemeProvider.tsx
 ├── db
-│   ├── category.schema.ts
-│   ├── expense.schema.ts
 │   ├── index.ts
-│   └── user.schema.ts
+│   ├── initialize.ts
+│   ├── queries
+│   │   ├── categories.ts
+│   │   └── users.ts
+│   ├── schema
+│   │   ├── category.relation.ts
+│   │   ├── category.schema.ts
+│   │   ├── expense.relation.ts
+│   │   ├── expense.schema.ts
+│   │   ├── user.relation.ts
+│   │   └── user.schema.ts
+│   └── types.ts
 ├── drizzle
-│   ├── 0000_brainy_lilandra.sql
-│   ├── meta
-│   │   ├── 0000_snapshot.json
-│   │   └── _journal.json
-│   └── migrations.js
 ├── drizzle.config.ts
 ├── expo-env.d.ts
 ├── hooks
+│   ├── useAuthContext.ts
+│   ├── useInitializeDatabase.ts
 │   └── useThemeContext.ts
 ├── metro.config.js
 ├── package.json
 ├── pnpm-lock.yaml
 ├── store
+│   ├── auth
+│   │   ├── authStore.ts
+│   │   └── interfaces.ts
+│   ├── category
+│   │   └── categoryStore.ts
 │   ├── logger.ts
+│   ├── state.storage.ts
 │   └── theme
 │       ├── interfaces.ts
 │       └── themeStore.ts
 ├── structure.txt
 └── tsconfig.json
 
-14 directories, 42 files
+19 directories, 55 files
