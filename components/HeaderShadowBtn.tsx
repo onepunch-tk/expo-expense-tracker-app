@@ -11,11 +11,13 @@ interface HeaderShadowBtnProps {
   backgroundColor: string;
   shadowColor: string;
   title: string;
+  onPress: () => void;
 }
 function HeaderShadowBtn({
   backgroundColor,
   shadowColor,
   title,
+  onPress,
 }: HeaderShadowBtnProps) {
   const { theme, setTheme } = useThemeContext((s) => ({
     theme: s.theme,
@@ -31,9 +33,7 @@ function HeaderShadowBtn({
         styles.buttonContainer,
       ]}
     >
-      <TouchableOpacity
-        onPress={() => setTheme(theme === "dark" ? "light" : "dark")}
-      >
+      <TouchableOpacity onPress={onPress}>
         <Text style={styles.text}>{title}</Text>
       </TouchableOpacity>
     </View>

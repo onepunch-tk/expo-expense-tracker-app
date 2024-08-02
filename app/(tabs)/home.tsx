@@ -16,6 +16,8 @@ import { getCategories } from "@/db/queries/categories";
 import { useThemeContext } from "@/context/ThemeProvider";
 import { useAuthContext } from "@/context/AuthProvider";
 import { useDatabase } from "@/context/DatabaseProvider";
+import { Tabs } from "expo-router";
+import HeaderShadowBtn from "@/components/HeaderShadowBtn";
 
 const fakeExpenseData = [
   {
@@ -101,12 +103,9 @@ const fakeExpenseData = [
   },
 ];
 
-const MENU_WIDTH = 250; // 메뉴의 너비
-
 function Expenses() {
   const colors = useThemeContext((s) => s.colors());
   const [showDatePicker, setShowDatePicker] = useState(false);
-  const [date, setDate] = useState(new Date());
   const [selectedCategory, setSelectedCategory] =
     useState<Pick<Category, "id" | "name">>();
   const { db } = useDatabase();
@@ -117,20 +116,50 @@ function Expenses() {
       addCategory: s.addCategory,
     })
   );
+  const [expenses, setExpenses] = useState(fakeExpenseData);
   const authUser = useAuthContext((s) => s.authUser);
+  const scrollViewCategories: Pick<Category, "id" | "name">[] = [
+    { id: -1, name: "All" },
+    ...categories,
+  ];
 
   useEffect(() => {
     (async () => {
-      const dbCategories = await getCategories(db, authUser?.id!!);
-      initialCategories(dbCategories);
-      if (dbCategories.length > 0) {
-        setSelectedCategory(dbCategories[0] as Pick<Category, "id" | "name">);
+      const { data: dbCategories, error } = await getCategories(
+        db,
+        authUser?.id as number
+      );
+      if (dbCategories?.length) {
+        initialCategories(dbCategories);
+        setSelectedCategory(scrollViewCategories[0]);
       }
     })();
   }, []);
 
+  const handleFilterExpenses = (name: string) => {
+    if (name === "All") {
+      setExpenses(fakeExpenseData);
+    } else {
+      setExpenses(fakeExpenseData.filter((e) => e.category === name));
+    }
+  };
+
   return (
     <View style={{ flex: 1 }}>
+      <Tabs.Screen
+        options={{
+          headerRight: () => (
+            <HeaderShadowBtn
+              backgroundColor={colors.btnBackground}
+              shadowColor={colors.shadowColor}
+              title="New"
+              onPress={() => {
+                console.log("Hello expo app");
+              }}
+            />
+          ),
+        }}
+      />
       <View
         style={{
           marginTop: 10,
@@ -139,13 +168,13 @@ function Expenses() {
         }}
       >
         <ScrollView horizontal showsHorizontalScrollIndicator={false}>
-          {categories &&
-            categories.map((c, index) => (
+          {scrollViewCategories &&
+            scrollViewCategories.map((c, index) => (
               <TouchableOpacity
                 style={{
                   flex: 1,
                   backgroundColor:
-                    selectedCategory === c
+                    selectedCategory?.id === c.id
                       ? colors.tabInactiveTint
                       : "transparent",
                   borderColor: colors.border,
@@ -157,9 +186,10 @@ function Expenses() {
                   alignItems: "center",
                   padding: 10,
                 }}
-                key={index.toString()}
+                key={c.id.toString()}
                 onPress={() => {
                   setSelectedCategory(c);
+                  handleFilterExpenses(c.name);
                 }}
               >
                 <Text
@@ -198,7 +228,7 @@ function Expenses() {
       </View>
       <DashBorder marginVertical={20} />
       <FlatList
-        data={fakeExpenseData}
+        data={expenses}
         showsVerticalScrollIndicator={false}
         contentContainerStyle={{
           paddingHorizontal: 20,

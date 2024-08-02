@@ -26,10 +26,8 @@ function InitialLayout() {
   const authUser = useAuthContext((s) => s.authUser);
   const theme = useThemeContext((s) => s.theme);
   const segments = useSegments();
-  const { db, isLoading, error: initDbError } = useDatabase();
-  console.log(
-    `total state - loaded: ${loaded}, success: ${db}, authUser: ${authUser}, segments: ${segments}`
-  );
+  const { isLoading, error: initDbError } = useDatabase();
+
   useDrizzleStudioHelper();
   // useDrizzleStudio(expoDb as any);
   useEffect(() => {
@@ -44,7 +42,7 @@ function InitialLayout() {
     }
   }, [loaded, authUser, segments, isLoading]);
 
-  if (!loaded && isLoading) {
+  if (!loaded || isLoading) {
     return null;
   }
 

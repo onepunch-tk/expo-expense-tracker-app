@@ -1,15 +1,37 @@
 import { categories } from "@/db/schema/category.schema";
 import { users } from "@/db/schema/user.schema";
 import { expenses } from "@/db/schema";
-import type { ExpoSQLiteDatabase } from "drizzle-orm/expo-sqlite";
-import type { SQLJsDatabase } from "drizzle-orm/sql-js";
+import { createInsertSchema, createSelectSchema } from "drizzle-zod";
+import { z } from "zod";
 
-export type DbType = ExpoSQLiteDatabase | SQLJsDatabase;
-
-export type Category = typeof categories.$inferSelect;
-export type User = typeof users.$inferSelect;
-export type Expense = typeof expenses.$inferSelect;
-
-export type CategoryWithExpensesCount = Omit<Category, "userId"> & {
-  expenseCount: number;
+export type ProtectResult<T> = {
+  data: T | null;
+  error: string | null;
 };
+
+export const InsertUserSchema = createInsertSchema(users).omit({ id: true });
+export const InsertCategorySchema = createInsertSchema(categories).omit({
+  id: true,
+});
+
+export const SelectUserSchema = createSelectSchema(users);
+
+export const SelectCategorySchema = createSelectSchema(categories);
+export const CategoryWithExpensesCountSchema = SelectCategorySchema.extend({
+  expenseCount: z.number().int().nonpositive(),
+});
+
+export const EmailLookupSchema = InsertUserSchema.pick({ email: true });
+
+export const CreateCategorySchema = InsertCategorySchema.pick({
+  name: true,
+  ionicIconName: true,
+  isDefault: true,
+});
+
+export type User = z.infer<typeof SelectUserSchema>;
+export type Category = z.infer<typeof SelectCategorySchema>;
+export type Expense = typeof expenses.$inferSelect;
+export type CategoryWithExpensesCount = z.infer<
+  typeof CategoryWithExpensesCountSchema
+>;

@@ -29,6 +29,9 @@ importers:
       drizzle-orm:
         specifier: ^0.32.1
         version: 0.32.1(@types/react@18.2.79)(expo-sqlite@13.4.0(expo@50.0.19(@babel/core@7.24.9)(@react-native/babel-preset@0.74.85(@babel/core@7.24.9)(@babel/preset-env@7.24.8(@babel/core@7.24.9)))))(react@18.2.0)
+      drizzle-zod:
+        specifier: ^0.5.1
+        version: 0.5.1(drizzle-orm@0.32.1(@types/react@18.2.79)(expo-sqlite@13.4.0(expo@50.0.19(@babel/core@7.24.9)(@react-native/babel-preset@0.74.85(@babel/core@7.24.9)(@babel/preset-env@7.24.8(@babel/core@7.24.9)))))(react@18.2.0))(zod@3.23.8)
       expo:
         specifier: ~50.0.19
         version: 50.0.19(@babel/core@7.24.9)(@react-native/babel-preset@0.74.85(@babel/core@7.24.9)(@babel/preset-env@7.24.8(@babel/core@7.24.9)))
@@ -89,6 +92,9 @@ importers:
       react-native-web:
         specifier: ~0.19.6
         version: 0.19.12(react-dom@18.2.0(react@18.2.0))(react@18.2.0)
+      zod:
+        specifier: ^3.23.8
+        version: 3.23.8
       zustand:
         specifier: ^4.5.4
         version: 4.5.4(@types/react@18.2.79)(immer@10.1.1)(react@18.2.0)
@@ -2512,6 +2518,12 @@ packages:
         optional: true
       sqlite3:
         optional: true
+
+  drizzle-zod@0.5.1:
+    resolution: {integrity: sha512-C/8bvzUH/zSnVfwdSibOgFjLhtDtbKYmkbPbUCq46QZyZCH6kODIMSOgZ8R7rVjoI+tCj3k06MRJMDqsIeoS4A==}
+    peerDependencies:
+      drizzle-orm: '>=0.23.13'
+      zod: '*'
 
   ee-first@1.1.1:
     resolution: {integrity: sha512-WMwm9LhRUo+WUaRN+vRuETqG89IgZphVSNkdFgeb6sS/E4OrDIN7t48CAewSHXc6C8lefD8KKfr5vY61brQlow==}
@@ -5299,6 +5311,9 @@ packages:
   yocto-queue@0.1.0:
     resolution: {integrity: sha512-rVksvsnNCdJ/ohGc6xgPwyN8eheCxsiLM8mxuE/t/mOVqJewPuO1miLpTHQiRgTKCLexL4MeAFVagts7HmNZ2Q==}
     engines: {node: '>=10'}
+
+  zod@3.23.8:
+    resolution: {integrity: sha512-XBx9AXhXktjUqnepgTiE5flcKIYWi/rme0Eaj+5Y0lftuGBq+jyRu/md4WnuxqgP1ubdpNCsYEYPxrzVHD8d6g==}
 
   zustand@4.5.4:
     resolution: {integrity: sha512-/BPMyLKJPtFEvVL0E9E9BTUM63MNyhPGlvxk1XjrfWTUlV+BR8jufjsovHzrtR6YNcBEcL7cMHovL1n9xHawEg==}
@@ -8442,6 +8457,11 @@ snapshots:
       '@types/react': 18.2.79
       expo-sqlite: 13.4.0(expo@50.0.19(@babel/core@7.24.9)(@react-native/babel-preset@0.74.85(@babel/core@7.24.9)(@babel/preset-env@7.24.8(@babel/core@7.24.9))))
       react: 18.2.0
+
+  drizzle-zod@0.5.1(drizzle-orm@0.32.1(@types/react@18.2.79)(expo-sqlite@13.4.0(expo@50.0.19(@babel/core@7.24.9)(@react-native/babel-preset@0.74.85(@babel/core@7.24.9)(@babel/preset-env@7.24.8(@babel/core@7.24.9)))))(react@18.2.0))(zod@3.23.8):
+    dependencies:
+      drizzle-orm: 0.32.1(@types/react@18.2.79)(expo-sqlite@13.4.0(expo@50.0.19(@babel/core@7.24.9)(@react-native/babel-preset@0.74.85(@babel/core@7.24.9)(@babel/preset-env@7.24.8(@babel/core@7.24.9)))))(react@18.2.0)
+      zod: 3.23.8
 
   ee-first@1.1.1: {}
 
@@ -11710,6 +11730,8 @@ snapshots:
       yargs-parser: 21.1.1
 
   yocto-queue@0.1.0: {}
+
+  zod@3.23.8: {}
 
   zustand@4.5.4(@types/react@18.2.79)(immer@10.1.1)(react@18.2.0):
     dependencies:

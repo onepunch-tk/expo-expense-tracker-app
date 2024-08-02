@@ -1,7 +1,6 @@
 import { Tabs, useNavigation } from "expo-router";
 import GradientBackground from "@/components/GradientBackground";
 import { Ionicons } from "@expo/vector-icons";
-import HeaderShadowBtn from "@/components/HeaderShadowBtn";
 import { DrawerActions } from "@react-navigation/native";
 import { useThemeContext } from "@/context/ThemeProvider";
 
@@ -37,13 +36,7 @@ function Layout() {
         name="home"
         options={{
           headerTitle: "Expenses Tracker",
-          headerRight: () => (
-            <HeaderShadowBtn
-              backgroundColor={colors.btnBackground}
-              shadowColor={colors.shadowColor}
-              title="New"
-            />
-          ),
+
           tabBarIcon: ({ focused, size, color }) => (
             <Ionicons
               name={focused ? "home" : "home-outline"}
@@ -65,13 +58,7 @@ function Layout() {
               color={color}
             />
           ),
-          headerRight: () => (
-            <HeaderShadowBtn
-              backgroundColor={colors.btnBackground}
-              shadowColor={colors.shadowColor}
-              title="New"
-            />
-          ),
+
           tabBarLabel: "Categories",
         }}
       />

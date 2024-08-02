@@ -5,6 +5,8 @@ import DashBorder from "@/components/DashBorder";
 import { Ionicons } from "@expo/vector-icons";
 import { useAuthContext } from "@/context/AuthProvider";
 import { useThemeContext } from "@/context/ThemeProvider";
+import { Tabs } from "expo-router";
+import HeaderShadowBtn from "@/components/HeaderShadowBtn";
 
 type IonicIconName = ComponentProps<typeof Ionicons>["name"];
 
@@ -18,6 +20,20 @@ function Categories() {
 
   return (
     <View style={{ padding: 20, flex: 1 }}>
+      <Tabs.Screen
+        options={{
+          headerRight: () => (
+            <HeaderShadowBtn
+              backgroundColor={colors.btnBackground}
+              shadowColor={colors.shadowColor}
+              title="New"
+              onPress={() => {
+                console.log("Hello world");
+              }}
+            />
+          ),
+        }}
+      />
       <Text
         style={{
           color: colors.title,
@@ -84,13 +100,6 @@ function Categories() {
                   justifyContent: "space-between",
                 }}
               >
-                <Text
-                  style={{ color: colors.title }}
-                  numberOfLines={3}
-                  ellipsizeMode={"tail"}
-                >
-                  {item.description}
-                </Text>
                 <View
                   style={{
                     flexDirection: "row",

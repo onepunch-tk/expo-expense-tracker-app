@@ -18,7 +18,7 @@ function Index() {
   const [password, setPassword] = useState<string>("");
   const colors = useThemeContext((s) => s.colors());
   const onLogin = useAuthContext((s) => s.onLogin);
-  const { db } = useDatabase();
+  const { db, isLoading, error } = useDatabase();
 
   useEffect(() => {
     (async () => {
@@ -29,8 +29,8 @@ function Index() {
     if (!email || !password) {
       return;
     }
-    const { success, error } = await onLogin(db, email, password);
-    if (!success) {
+    const { error } = await onLogin(db, email, password);
+    if (error) {
       console.error(error);
       return;
     }

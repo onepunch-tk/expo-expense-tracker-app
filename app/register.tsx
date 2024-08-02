@@ -25,8 +25,8 @@ function Register() {
 
   const handleRegister = async () => {
     if (!email || !password) return;
-    const { success, error } = await onRegister(db, email, password);
-    if (!success) {
+    const { user, error } = await onRegister(db, email, password);
+    if (error) {
       console.error(error);
       return;
     }

@@ -1,16 +1,18 @@
-import { DbType, User } from "@/db/types";
+import { User } from "@/db/types";
+import { ExpoDbType, SQLJsDbType } from "@/db/dirzzle";
 
 export interface AuthProps {
   authUser?: Pick<User, "email" | "id">;
 }
+
 export interface AuthState extends AuthProps {
   onRegister: (
-    db: DbType | null,
+    db: ExpoDbType | SQLJsDbType | null,
     email: string,
     password: string
   ) => Promise<AuthResponse>;
   onLogin: (
-    db: DbType | null,
+    db: ExpoDbType | SQLJsDbType | null,
     email: string,
     password: string
   ) => Promise<AuthResponse>;
@@ -18,6 +20,6 @@ export interface AuthState extends AuthProps {
 }
 
 export interface AuthResponse {
-  success: boolean;
+  user: User | null;
   error?: string;
 }

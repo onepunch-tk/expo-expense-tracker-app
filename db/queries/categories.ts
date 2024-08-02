@@ -1,7 +1,9 @@
-import { categories, expenses } from "@/db/schema";
-import { CategoryWithExpensesCount, DbType } from "@/db/types";
-import { count, eq, or } from "drizzle-orm";
-import { ExpoSQLiteDatabase } from "drizzle-orm/expo-sqlite";
+import { categories, usersToCategories } from "@/db/schema";
+import { CategoryWithExpensesCount } from "@/db/types";
+import { protect } from "@/db/queries/helpers";
+import { ExpoDbType, SQLJsDbType } from "@/db/dirzzle";
+import { eq } from "drizzle-orm";
+import { z } from "zod";
 
 const DEFAULT_CATEGORIES = [
   {
@@ -9,83 +11,114 @@ const DEFAULT_CATEGORIES = [
     ionicIconName: "fast-food-outline",
     description:
       "Expenses related to groceries, eating out, beverages, and snacks.",
+    isDefault: true,
   },
   {
     name: "clothing/shoes",
     ionicIconName: "shirt-outline",
     description: "Purchases of clothing items, footwear, and accessories.",
+    isDefault: true,
   },
   {
     name: "transport",
     ionicIconName: "car-outline",
     description:
       "Costs associated with public transportation, fuel, vehicle maintenance, and ride-sharing services.",
+    isDefault: true,
   },
   {
     name: "education",
     ionicIconName: "book-outline",
     description:
       "Expenses for tuition, books, courses, workshops, and educational materials.",
+    isDefault: true,
   },
   {
     name: "gifts/donations",
     ionicIconName: "gift-outline",
     description:
       "Money spent on presents for others or charitable contributions.",
+    isDefault: true,
   },
   {
     name: "entertainment",
     ionicIconName: "game-controller-outline",
     description:
       "Costs for leisure activities, such as movies, concerts, gaming, and hobbies.",
+    isDefault: true,
   },
   {
     name: "house",
     ionicIconName: "construct-outline",
     description:
       "Expenses related to rent/mortgage, utilities, home maintenance, and household items.",
+    isDefault: true,
   },
 ];
-export async function getCategories(
-  db: DbType | null,
+
+// category: {
+//   extras: {
+//     expenseCount: sql<number>`count(${eq(
+//       expenses.categoryId,
+//       categories.id
+//     )})`.as("expense_count"),
+//   },
+// },
+
+export const getCategoriesQuery = async (
+  db: ExpoDbType | SQLJsDbType,
   userId: number
-): Promise<CategoryWithExpensesCount[]> {
-  return (db as ExpoSQLiteDatabase)
-    .select({
-      id: categories.id,
-      name: categories.name,
-      ionicIconName: categories.ionicIconName,
-      isDefault: categories.isDefault,
-      description: categories.description,
-      expenseCount: count(expenses.id),
-    })
-    .from(categories)
-    .leftJoin(expenses, eq(expenses.categoryId, categories.id))
-    .where(or(eq(categories.isDefault, true), eq(categories.userId, userId)))
-    .groupBy(categories.id);
-}
+): Promise<CategoryWithExpensesCount[]> => {
+  const result = await db.query.usersToCategories.findMany({
+    where: (utc) => eq(utc.userId, userId),
+    with: {
+      category: {
+        with: {
+          expenses: true,
+        },
+      },
+    },
+  });
+  return result.map((r) => ({
+    id: r.category.id,
+    name: r.category.name,
+    ionicIconName: r.category.ionicIconName,
+    isDefault: r.category.isDefault,
+    expenseCount: r.category.expenses.length,
+  }));
+};
 
-export async function initializeCategories(db: DbType | null) {
-  const allCategories = await db
-    ?.select()
-    .from(categories)
-    .where(eq(categories.isDefault, true));
-  const categoryNames = allCategories?.map((c) => c.name);
+export const getCategories = protect(getCategoriesQuery, z.tuple([z.number()]));
 
-  DEFAULT_CATEGORIES.filter((d) => !categoryNames?.includes(d.name)).map(
-    async (c) =>
-      await db?.insert(categories).values({
-        name: c.name,
-        ionicIconName: c.ionicIconName,
-        isDefault: true,
-        description: c.description,
-      })
-  );
+const initializeCategoriesQuery = async (
+  db: ExpoDbType | SQLJsDbType
+): Promise<void> => {
+  await db.insert(categories).values(DEFAULT_CATEGORIES).onConflictDoNothing();
+};
 
-  console.log("Default categories have been initialized.");
+export const initializeCategories = protect(initializeCategoriesQuery);
 
-  console.log(
-    "All categories:",
-    allCategories?.map((c) => c.name)
-  );
-}
+const insertUsersToCategoriesQuery = async (
+  db: ExpoDbType | SQLJsDbType,
+  userId: number
+) => {
+  await db.transaction(async (tx) => {
+    try {
+      const defaultCategories = await tx.query.categories.findMany({
+        where: eq(categories.isDefault, true),
+      });
+      for (const category of defaultCategories) {
+        await tx
+          .insert(usersToCategories)
+          .values({ categoryId: category.id, userId });
+      }
+    } catch (e) {
+      console.error(e);
+    }
+  });
+};
+
+export const insertUsersToCategories = protect(
+  insertUsersToCategoriesQuery,
+  z.tuple([z.number()])
+);

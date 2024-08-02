@@ -5,11 +5,15 @@ import {
   useEffect,
   useState,
 } from "react";
-import { initialize, runMigrations } from "@/db/dirzzle";
-import { DbType } from "@/db/types";
+import {
+  ExpoDbType,
+  initialize,
+  runMigrations,
+  SQLJsDbType,
+} from "@/db/dirzzle";
 
 type DbContextType = {
-  db: DbType | null;
+  db: ExpoDbType | SQLJsDbType | null;
   isLoading: boolean;
   error: Error | null;
 };
@@ -44,7 +48,6 @@ function DatabaseProvider({ children }: PropsWithChildren) {
 
     initDb();
   }, []);
-
   return (
     <DatabaseContext.Provider value={state}>
       {children}
