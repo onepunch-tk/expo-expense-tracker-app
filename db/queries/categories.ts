@@ -1,57 +1,54 @@
-import { categories, usersToCategories } from "@/db/schema";
-import { CategoryWithExpensesCount } from "@/db/types";
+import { categories, expenses, usersToCategories } from "@/db/schema";
+import {
+  Category,
+  CategoryWithExpensesCount,
+  InsertCategorySchema,
+  NewCategory,
+} from "@/db/types";
 import { protect } from "@/db/queries/helpers";
 import { ExpoDbType, SQLJsDbType } from "@/db/dirzzle";
-import { eq } from "drizzle-orm";
+import { and, eq } from "drizzle-orm";
 import { z } from "zod";
 
 const DEFAULT_CATEGORIES = [
   {
     name: "food/drink",
-    ionicIconName: "fast-food-outline",
-    description:
-      "Expenses related to groceries, eating out, beverages, and snacks.",
+    ionIconName: "fast-food-outline",
     isDefault: true,
   },
   {
     name: "clothing/shoes",
-    ionicIconName: "shirt-outline",
-    description: "Purchases of clothing items, footwear, and accessories.",
+    ionIconName: "shirt-outline",
     isDefault: true,
   },
   {
     name: "transport",
-    ionicIconName: "car-outline",
-    description:
-      "Costs associated with public transportation, fuel, vehicle maintenance, and ride-sharing services.",
+    ionIconName: "car-outline",
     isDefault: true,
   },
   {
     name: "education",
-    ionicIconName: "book-outline",
-    description:
-      "Expenses for tuition, books, courses, workshops, and educational materials.",
+    ionIconName: "book-outline",
     isDefault: true,
   },
   {
     name: "gifts/donations",
-    ionicIconName: "gift-outline",
-    description:
-      "Money spent on presents for others or charitable contributions.",
+    ionIconName: "gift-outline",
     isDefault: true,
   },
   {
     name: "entertainment",
-    ionicIconName: "game-controller-outline",
-    description:
-      "Costs for leisure activities, such as movies, concerts, gaming, and hobbies.",
+    ionIconName: "game-controller-outline",
     isDefault: true,
   },
   {
     name: "house",
-    ionicIconName: "construct-outline",
-    description:
-      "Expenses related to rent/mortgage, utilities, home maintenance, and household items.",
+    ionIconName: "construct-outline",
+    isDefault: true,
+  },
+  {
+    name: "etc",
+    ionIconName: "ellipsis-horizontal-outline",
     isDefault: true,
   },
 ];
@@ -82,7 +79,7 @@ export const getCategoriesQuery = async (
   return result.map((r) => ({
     id: r.category.id,
     name: r.category.name,
-    ionicIconName: r.category.ionicIconName,
+    ionIconName: r.category.ionIconName,
     isDefault: r.category.isDefault,
     expenseCount: r.category.expenses.length,
   }));
@@ -121,4 +118,48 @@ const insertUsersToCategoriesQuery = async (
 export const insertUsersToCategories = protect(
   insertUsersToCategoriesQuery,
   z.tuple([z.number()])
+);
+
+const createCategoryQuery = async (
+  db: ExpoDbType | SQLJsDbType,
+  newCategory: NewCategory,
+  userId: number
+): Promise<Category | null> => {
+  const results = await db.insert(categories).values(newCategory).returning();
+  const createdCategory = results.pop();
+  if (createdCategory) {
+    await db
+      .insert(usersToCategories)
+      .values({ categoryId: createdCategory.id, userId });
+    return createdCategory;
+  }
+
+  return null;
+};
+
+export const createCategory = protect(
+  createCategoryQuery,
+  z.tuple([InsertCategorySchema, z.number()])
+);
+
+const deleteCategoryQuery = async (
+  db: ExpoDbType | SQLJsDbType,
+  userId: number,
+  categoryId: number
+) => {
+  await db.delete(categories).where(eq(categories.id, categoryId));
+  await db
+    .delete(usersToCategories)
+    .where(
+      and(
+        eq(usersToCategories.userId, userId),
+        eq(usersToCategories.categoryId, categoryId)
+      )
+    );
+  await db.delete(expenses).where(eq(expenses.categoryId, categoryId));
+};
+
+export const deleteCategory = protect(
+  deleteCategoryQuery,
+  z.tuple([z.number(), z.number()])
 );

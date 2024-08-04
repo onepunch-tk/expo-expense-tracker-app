@@ -7,6 +7,7 @@ interface CategoryState {
   addCategory: (category: Category) => void;
   removeCategory: (id: number) => void;
   initialCategories: (initialCategories: CategoryWithExpensesCount[]) => void;
+  updateExpenseCount: (categoryId: number) => void;
 }
 export const useCategoryStore = create<CategoryState>()(
   immer((set, get, store) => ({
@@ -24,6 +25,16 @@ export const useCategoryStore = create<CategoryState>()(
     initialCategories: (initialCategories) => {
       set((state) => {
         state.categories = initialCategories;
+      });
+    },
+    updateExpenseCount: (categoryId) => {
+      set((state) => {
+        const updateCategory = state.categories.find(
+          (cat) => cat.id === categoryId
+        );
+        if (updateCategory) {
+          updateCategory.expenseCount = updateCategory.expenseCount + 1;
+        }
       });
     },
   }))

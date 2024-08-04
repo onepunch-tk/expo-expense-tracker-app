@@ -27,12 +27,6 @@ export const CategoryWithExpensesCountSchema = SelectCategorySchema.extend({
 
 export const EmailLookupSchema = InsertUserSchema.pick({ email: true });
 
-export const CreateCategorySchema = InsertCategorySchema.pick({
-  name: true,
-  ionicIconName: true,
-  isDefault: true,
-});
-
 export type User = z.infer<typeof SelectUserSchema>;
 export type Category = z.infer<typeof SelectCategorySchema>;
 export type Expense = z.infer<typeof SelectExpenseSchema>;
@@ -41,3 +35,4 @@ export type CategoryWithExpensesCount = z.infer<
 >;
 export type NewExpense = z.infer<typeof InsertExpenseSchema>;
 export type CreatedExpense = z.infer<typeof SelectExpenseSchema>;
+export type NewCategory = z.infer<typeof InsertCategorySchema>;

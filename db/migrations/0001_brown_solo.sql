@@ -1,0 +1,1 @@
+ALTER TABLE `categories` RENAME COLUMN `ionic_icon_name` TO `ionicon_name`;

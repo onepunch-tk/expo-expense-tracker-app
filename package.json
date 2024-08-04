@@ -25,6 +25,7 @@
     "drizzle-orm": "^0.32.1",
     "drizzle-zod": "^0.5.1",
     "expo": "~50.0.19",
+    "expo-checkbox": "~2.7.0",
     "expo-drizzle-studio-plugin": "^0.0.2",
     "expo-font": "~11.10.3",
     "expo-linear-gradient": "~12.7.2",

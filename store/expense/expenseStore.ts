@@ -41,6 +41,7 @@ interface ExpenseState {
   setSelectedDate: (date: SelectedDate) => void;
   setSelectedCategoryId: (categoryId: number) => void;
   getFilteredExpenses: () => ExpenseGroup[];
+  deleteExpenseFromCategoryId: (categoryId: number) => void;
 }
 
 // 'YYYY-MM' 문자열에서 YearMonth 객체 생성
@@ -109,6 +110,18 @@ export const useExpenseStore = create<ExpenseState>()(
             expenses: [createdExpense],
           });
         }
+      });
+    },
+    deleteExpenseFromCategoryId: (categoryId) => {
+      const { expenseGroup } = get();
+      set((state) => {
+        state.expenseGroup = expenseGroup.reduce((acc, value) => {
+          const filteredExpenses = value.expenses.filter(
+            (exp) => exp.categoryId !== categoryId
+          );
+          acc.push({ sortDate: value.sortDate, expenses: filteredExpenses });
+          return acc;
+        }, Array.from<ExpenseGroup>([]));
       });
     },
     setSelectedCategoryId: (categoryId) => {

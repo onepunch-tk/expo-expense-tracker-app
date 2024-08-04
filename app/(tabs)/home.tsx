@@ -23,7 +23,8 @@ function Expenses() {
   const [showDatePicker, setShowDatePicker] = useState(false);
   const [showNewExpenseModal, setNewExpenseModal] = useState(false);
   const { db } = useDatabase();
-  const { initialCategories, addCategory, categories } = useCategoryStore();
+  const { initialCategories, addCategory, categories, updateExpenseCount } =
+    useCategoryStore();
   const {
     getFilteredExpenses,
     addExpense,
@@ -47,7 +48,6 @@ function Expenses() {
   const filterExpenseGroup = getFilteredExpenses();
 
   const handleSubmitExpense = async (newExpense: NewExpense) => {
-    console.log("newExpense: ", newExpense);
     const { data: createdExpense, error } = await createExpense(db, newExpense);
 
     if (error) {
@@ -57,6 +57,7 @@ function Expenses() {
 
     if (createdExpense) {
       addExpense(createdExpense);
+      updateExpenseCount(createdExpense.categoryId);
     }
   };
 

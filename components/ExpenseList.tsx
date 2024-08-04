@@ -38,7 +38,7 @@ function ExpenseList({ expenses, categories, colors }: ExpenseListProps) {
             <Ionicons
               name={
                 categories.find((cat) => cat.id === ex.categoryId)
-                  ?.ionicIconName as any
+                  ?.ionIconName as any
               }
               size={23}
               color={colors.tagText}

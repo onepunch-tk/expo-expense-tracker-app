@@ -1,5 +1,5 @@
-import { FlatList, Text, View } from "react-native";
-import { ComponentProps } from "react";
+import { FlatList, Text, TouchableOpacity, View } from "react-native";
+import { ComponentProps, useState } from "react";
 import { useCategoryStore } from "@/store/category/categoryStore";
 import DashBorder from "@/components/DashBorder";
 import { Ionicons } from "@expo/vector-icons";
@@ -7,17 +7,48 @@ import { useAuthContext } from "@/context/AuthProvider";
 import { useThemeContext } from "@/context/ThemeProvider";
 import { Tabs } from "expo-router";
 import HeaderShadowBtn from "@/components/HeaderShadowBtn";
+import BottomSlidingModal from "@/components/BottomSlidingModal";
+import CategoryDataForm from "@/components/CategoryDataForm";
+import { NewCategory } from "@/db/types";
+import { createCategory, deleteCategory } from "@/db/queries/categories";
+import { useDatabase } from "@/context/DatabaseProvider";
+import { useExpenseStore } from "@/store/expense/expenseStore";
 
-type IonicIconName = ComponentProps<typeof Ionicons>["name"];
+type IonIconName = ComponentProps<typeof Ionicons>["name"];
 
 function Categories() {
-  const { categories, addCategory } = useCategoryStore((s) => ({
-    categories: s.categories,
-    addCategory: s.addCategory,
-  }));
+  const { categories, addCategory, removeCategory } = useCategoryStore();
+  const deleteExpenseFromCategoryId = useExpenseStore(
+    (s) => s.deleteExpenseFromCategoryId
+  );
   const authUser = useAuthContext((s) => s.authUser);
   const colors = useThemeContext((s) => s.colors());
+  const [showNewCategory, setShowNewCategory] = useState(false);
+  const { db } = useDatabase();
+  const handleModalClose = () => {
+    setShowNewCategory(false);
+  };
 
+  const handleSubmitCategory = async (newCategory: NewCategory) => {
+    const { data: createdCategory, error } = await createCategory(
+      db,
+      newCategory,
+      authUser?.id as number
+    );
+
+    if (!createdCategory) {
+      console.error(error);
+      return;
+    }
+
+    addCategory(createdCategory);
+  };
+
+  const handleDeleteCategory = async (categoryId: number) => {
+    await deleteCategory(db, authUser?.id as number, categoryId);
+    removeCategory(categoryId);
+    deleteExpenseFromCategoryId(categoryId);
+  };
   return (
     <View style={{ padding: 20, flex: 1 }}>
       <Tabs.Screen
@@ -27,9 +58,7 @@ function Categories() {
               backgroundColor={colors.btnBackground}
               shadowColor={colors.shadowColor}
               title="New"
-              onPress={() => {
-                console.log("Hello world");
-              }}
+              onPress={() => setShowNewCategory(true)}
             />
           ),
         }}
@@ -69,7 +98,7 @@ function Categories() {
               }}
             >
               <Ionicons
-                name={item.ionicIconName as IonicIconName}
+                name={item.ionIconName as IonIconName}
                 color={colors.title}
                 size={30}
               />
@@ -102,20 +131,39 @@ function Categories() {
               >
                 <View
                   style={{
-                    flexDirection: "row",
                     justifyContent: "space-between",
+                    height: "100%",
                   }}
                 >
                   <Text style={{ color: colors.title }}>
                     expenses: {item.expenseCount}
                   </Text>
-                  {!item.isDefault ? <View>삭제</View> : null}
+                  {!item.isDefault ? (
+                    <TouchableOpacity
+                      onPress={() => handleDeleteCategory(item.id)}
+                      style={{
+                        backgroundColor: "red",
+                        padding: 5,
+                        alignItems: "center",
+                        borderRadius: 10,
+                      }}
+                    >
+                      <Text style={{ color: "#fff" }}>Delete</Text>
+                    </TouchableOpacity>
+                  ) : null}
                 </View>
               </View>
             </View>
           </View>
         )}
       />
+      <BottomSlidingModal show={showNewCategory} onClose={handleModalClose}>
+        <CategoryDataForm
+          onSubmit={handleSubmitCategory}
+          onClose={handleModalClose}
+          colors={colors}
+        />
+      </BottomSlidingModal>
     </View>
   );
 }
