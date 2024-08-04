@@ -13,10 +13,14 @@ export const InsertUserSchema = createInsertSchema(users).omit({ id: true });
 export const InsertCategorySchema = createInsertSchema(categories).omit({
   id: true,
 });
+export const InsertExpenseSchema = createInsertSchema(expenses).omit({
+  id: true,
+  createdAt: true,
+});
 
 export const SelectUserSchema = createSelectSchema(users);
-
 export const SelectCategorySchema = createSelectSchema(categories);
+export const SelectExpenseSchema = createSelectSchema(expenses);
 export const CategoryWithExpensesCountSchema = SelectCategorySchema.extend({
   expenseCount: z.number().int().nonpositive(),
 });
@@ -31,7 +35,9 @@ export const CreateCategorySchema = InsertCategorySchema.pick({
 
 export type User = z.infer<typeof SelectUserSchema>;
 export type Category = z.infer<typeof SelectCategorySchema>;
-export type Expense = typeof expenses.$inferSelect;
+export type Expense = z.infer<typeof SelectExpenseSchema>;
 export type CategoryWithExpensesCount = z.infer<
   typeof CategoryWithExpensesCountSchema
 >;
+export type NewExpense = z.infer<typeof InsertExpenseSchema>;
+export type CreatedExpense = z.infer<typeof SelectExpenseSchema>;

@@ -8,7 +8,7 @@ interface CategoryState {
   removeCategory: (id: number) => void;
   initialCategories: (initialCategories: CategoryWithExpensesCount[]) => void;
 }
-export const userCategoryStore = create<CategoryState>()(
+export const useCategoryStore = create<CategoryState>()(
   immer((set, get, store) => ({
     categories: [],
     addCategory: (newCategory) => {

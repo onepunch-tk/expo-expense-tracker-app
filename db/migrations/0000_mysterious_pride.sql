@@ -10,7 +10,7 @@ CREATE TABLE `expenses` (
 	`title` text NOT NULL,
 	`description` text,
 	`amount` integer NOT NULL,
-	`date` integer NOT NULL,
+	`created_at` text DEFAULT (CURRENT_DATE) NOT NULL,
 	`user_id` integer NOT NULL,
 	`category_id` integer NOT NULL,
 	FOREIGN KEY (`user_id`) REFERENCES `users`(`id`) ON UPDATE no action ON DELETE cascade,

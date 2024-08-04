@@ -36,8 +36,10 @@ function DatabaseProvider({ children }: PropsWithChildren) {
       try {
         const newDb = await initialize();
         await runMigrations(newDb);
+        console.log("run migrations");
         setState({ db: newDb, isLoading: false, error: null });
       } catch (error) {
+        console.error(error);
         setState((prev) => ({
           ...prev,
           isLoading: false,
@@ -47,7 +49,7 @@ function DatabaseProvider({ children }: PropsWithChildren) {
     };
 
     initDb();
-  }, []);
+  }, [state.db]);
   return (
     <DatabaseContext.Provider value={state}>
       {children}

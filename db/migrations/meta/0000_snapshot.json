@@ -1,7 +1,7 @@
 {
   "version": "6",
   "dialect": "sqlite",
-  "id": "e7fb682b-992a-4268-9d95-9a9872816b70",
+  "id": "d733970d-b646-44c1-9267-098d6825fe04",
   "prevId": "00000000-0000-0000-0000-000000000000",
   "tables": {
     "categories": {
@@ -81,12 +81,13 @@
           "notNull": true,
           "autoincrement": false
         },
-        "date": {
-          "name": "date",
-          "type": "integer",
+        "created_at": {
+          "name": "created_at",
+          "type": "text",
           "primaryKey": false,
           "notNull": true,
-          "autoincrement": false
+          "autoincrement": false,
+          "default": "(CURRENT_DATE)"
         },
         "user_id": {
           "name": "user_id",

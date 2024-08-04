@@ -23,9 +23,12 @@ function BottomSlidingModal({
       visible={show}
       onRequestClose={onClose}
     >
-      <TouchableWithoutFeedback onPress={onClose}>
-        <View style={styles.modalOverlay}>{children}</View>
-      </TouchableWithoutFeedback>
+      <View style={styles.modalOverlay}>
+        <TouchableWithoutFeedback onPress={onClose}>
+          <View style={styles.modalBackground} />
+        </TouchableWithoutFeedback>
+        <View style={styles.modalContent}>{children}</View>
+      </View>
     </Modal>
   );
 }
@@ -33,7 +36,15 @@ const styles = StyleSheet.create({
   modalOverlay: {
     flex: 1,
     justifyContent: "flex-end",
+  },
+  modalBackground: {
+    flex: 1,
     backgroundColor: "rgba(0, 0, 0, 0.65)",
+  },
+  modalContent: {
+    backgroundColor: "white",
+    borderTopLeftRadius: 20,
+    borderTopRightRadius: 20,
   },
 });
 export default BottomSlidingModal;

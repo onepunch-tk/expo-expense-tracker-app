@@ -9,7 +9,6 @@
 │   │   └── home.tsx
 │   ├── +html.tsx
 │   ├── +not-found.tsx
-│   ├── TestComponenet.tsx
 │   ├── _layout.tsx
 │   ├── index.tsx
 │   └── register.tsx
@@ -34,28 +33,39 @@
 │   └── Colors.ts
 ├── context
 │   ├── AuthProvider.tsx
+│   ├── DatabaseProvider.tsx
 │   └── ThemeProvider.tsx
 ├── db
-│   ├── index.ts
-│   ├── initialize.ts
+│   ├── dirzzle.ts
+│   ├── fake.data.ts
+│   ├── migrations
+│   │   ├── 0000_mysterious_pride.sql
+│   │   ├── meta
+│   │   │   ├── 0000_snapshot.json
+│   │   │   └── _journal.json
+│   │   └── migrations.js
 │   ├── queries
 │   │   ├── categories.ts
+│   │   ├── expenses.ts
+│   │   ├── helpers.ts
 │   │   └── users.ts
-│   ├── schema
+│   ├── relations
 │   │   ├── category.relation.ts
-│   │   ├── category.schema.ts
 │   │   ├── expense.relation.ts
-│   │   ├── expense.schema.ts
+│   │   ├── index.ts
 │   │   ├── user.relation.ts
-│   │   └── user.schema.ts
+│   │   └── userToCategory.relation.ts
+│   ├── schema
+│   │   ├── category.schema.ts
+│   │   ├── expense.schema.ts
+│   │   ├── index.ts
+│   │   ├── user.schema.ts
+│   │   └── usersToCategories.schema.ts
 │   └── types.ts
-├── drizzle
 ├── drizzle.config.ts
 ├── expo-env.d.ts
 ├── hooks
-│   ├── useAuthContext.ts
-│   ├── useInitializeDatabase.ts
-│   └── useThemeContext.ts
+│   └── useInitialData.ts
 ├── metro.config.js
 ├── package.json
 ├── pnpm-lock.yaml
@@ -65,6 +75,9 @@
 │   │   └── interfaces.ts
 │   ├── category
 │   │   └── categoryStore.ts
+│   ├── expense
+│   │   └── expenseStore.ts
+│   ├── helpers.ts
 │   ├── logger.ts
 │   ├── state.storage.ts
 │   └── theme
@@ -73,4 +86,4 @@
 ├── structure.txt
 └── tsconfig.json
 
-19 directories, 55 files
+22 directories, 65 files

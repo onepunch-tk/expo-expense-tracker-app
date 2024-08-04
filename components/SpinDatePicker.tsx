@@ -1,8 +1,9 @@
-import { Animated, Text, View } from "react-native";
-import React, { useCallback, useEffect, useRef, useState } from "react";
-import RNDateTimePicker, {
-  DateTimePickerEvent,
-} from "@react-native-community/datetimepicker";
+import { StyleSheet, View } from "react-native";
+import React, { useState } from "react";
+import { Picker } from "react-native-wheel-pick";
+import { Theme } from "@/constants/Colors";
+import { SelectedDate } from "@/store/expense/expenseStore";
+import ModalActionButtons from "@/components/ModalActionButtons";
 
 const monthNames = [
   "January",
@@ -20,93 +21,75 @@ const monthNames = [
 ];
 
 interface SpinDatePickerProps {
-  datePickerHeight: number;
-  backgroundColor: string;
-  borderTopRadius?: number;
-  textColor?: string;
-  initialDate?: Date;
+  colors: Theme;
+  onClose: () => void;
+  onSelectedDate: (date: SelectedDate) => void;
 }
 
 function SpinDatePicker({
-  datePickerHeight,
-  backgroundColor,
-  borderTopRadius,
-  textColor = "#000",
-  initialDate,
+  colors,
+  onClose,
+  onSelectedDate,
 }: SpinDatePickerProps) {
-  const slideAnim = useRef(new Animated.Value(datePickerHeight)).current;
-  const [date, setDate] = useState(initialDate || new Date());
+  const currentYear = new Date().getFullYear();
+  const currentMonth = new Date().getMonth();
 
-  const animateIn = useCallback(() => {
-    Animated.spring(slideAnim, {
-      toValue: 0,
-      useNativeDriver: true,
-    }).start();
-  }, [slideAnim]);
+  const [selectedValue, setSelectedValue] = useState("all");
 
-  const animateOut = useCallback(() => {
-    Animated.timing(slideAnim, {
-      toValue: slideAnim,
-      duration: 300,
-      useNativeDriver: true,
-    }).start();
-  }, [slideAnim]);
+  const pickerData = [
+    { value: "all", label: "All" },
+    ...Array.from({ length: 120 }, (_, i) => {
+      const date = new Date(currentYear, currentMonth - i, 1);
+      return {
+        value: `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(
+          2,
+          "0"
+        )}`,
+        label: `${monthNames[date.getMonth()]} ${date.getFullYear()}`,
+      };
+    }),
+  ];
 
-  useEffect(() => {
-    animateIn();
-    return () => {
-      animateOut();
-    };
-  }, []);
+  const handleValueChange = (value: string) => {
+    setSelectedValue(value);
+  };
 
-  const handleChange = (event: DateTimePickerEvent, selectedDate?: Date) => {
-    const currentDate = selectedDate || date;
-    setDate(currentDate);
+  const handleSelected = () => {
+    onSelectedDate(selectedValue);
+    onClose();
   };
 
   return (
-    <Animated.View
-      style={[
-        {
-          backgroundColor,
-          transform: [{ translateY: slideAnim }],
-          ...(borderTopRadius && {
-            borderTopLeftRadius: borderTopRadius,
-            borderTopRightRadius: borderTopRadius,
-          }),
-        },
-      ]}
-    >
-      <View
-        style={{
-          paddingTop: 20,
-          paddingRight: 20,
-          flexDirection: "row",
-          justifyContent: "flex-end",
-          gap: 8,
-        }}
-      >
-        <Text style={{ color: textColor, fontSize: 15, fontWeight: "600" }}>
-          {date.getDate()}
-        </Text>
-        <Text style={{ color: textColor, fontSize: 15, fontWeight: "600" }}>
-          {monthNames[date.getMonth()]}
-        </Text>
-        <Text style={{ color: textColor, fontSize: 15, fontWeight: "600" }}>
-          {date.getFullYear()}
-        </Text>
-      </View>
-      <RNDateTimePicker
-        dateFormat={"day month year"}
-        value={date}
-        mode={"date"}
-        display="spinner"
-        textColor={textColor}
-        style={{ height: datePickerHeight }}
-        onChange={handleChange}
+    <View style={styles.container}>
+      <ModalActionButtons
+        onPrimaryAction={handleSelected}
+        onClose={onClose}
+        primaryText={"Select"}
       />
-    </Animated.View>
+      <Picker
+        style={styles.picker}
+        selectedValue={selectedValue}
+        pickerData={pickerData}
+        onValueChange={handleValueChange}
+      />
+    </View>
   );
 }
+
+const styles = StyleSheet.create({
+  container: {
+    backgroundColor: "white",
+    padding: 20,
+    justifyContent: "center",
+    alignItems: "center",
+    borderTopLeftRadius: 20,
+    borderTopRightRadius: 20,
+  },
+  picker: {
+    backgroundColor: "white",
+    width: 400,
+    height: 200,
+  },
+});
 
 export default SpinDatePicker;

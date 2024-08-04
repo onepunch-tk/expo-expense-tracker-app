@@ -1,6 +1,6 @@
 import { FlatList, Text, View } from "react-native";
 import { ComponentProps } from "react";
-import { userCategoryStore } from "@/store/category/categoryStore";
+import { useCategoryStore } from "@/store/category/categoryStore";
 import DashBorder from "@/components/DashBorder";
 import { Ionicons } from "@expo/vector-icons";
 import { useAuthContext } from "@/context/AuthProvider";
@@ -11,7 +11,7 @@ import HeaderShadowBtn from "@/components/HeaderShadowBtn";
 type IonicIconName = ComponentProps<typeof Ionicons>["name"];
 
 function Categories() {
-  const { categories, addCategory } = userCategoryStore((s) => ({
+  const { categories, addCategory } = useCategoryStore((s) => ({
     categories: s.categories,
     addCategory: s.addCategory,
   }));
